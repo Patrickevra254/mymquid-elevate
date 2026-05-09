@@ -54,9 +54,9 @@
   --popover: oklch(0.20 0.018 240);
   --popover-foreground: oklch(0.98 0.005 240);
 
-  /* Electric mint/teal — fintech signal */
-  --primary: oklch(0.86 0.16 165);
-  --primary-foreground: oklch(0.18 0.02 200);
+  /* Mquid amber/gold — brand signal */
+  --primary: oklch(0.82 0.17 78);
+  --primary-foreground: oklch(0.18 0.02 60);
 
   --secondary: oklch(0.26 0.025 240);
   --secondary-foreground: oklch(0.98 0.005 240);
@@ -64,25 +64,25 @@
   --muted: oklch(0.24 0.02 240);
   --muted-foreground: oklch(0.68 0.02 240);
 
-  --accent: oklch(0.72 0.18 270);
-  --accent-foreground: oklch(0.98 0.005 240);
+  --accent: oklch(0.72 0.19 45);
+  --accent-foreground: oklch(0.16 0.02 60);
 
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.98 0.005 240);
 
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.86 0.16 165);
+  --ring: oklch(0.82 0.17 78);
 
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Instrument Serif", "Inter", serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.86 0.16 165 / 0.18), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 30%, oklch(0.72 0.18 270 / 0.12), transparent 60%);
+  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.82 0.17 78 / 0.20), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 30%, oklch(0.72 0.19 45 / 0.14), transparent 60%);
   --gradient-text: linear-gradient(180deg, oklch(0.98 0.005 240) 30%, oklch(0.65 0.02 240) 100%);
-  --gradient-primary: linear-gradient(135deg, oklch(0.86 0.16 165), oklch(0.72 0.18 200));
-  --shadow-glow: 0 0 60px -10px oklch(0.86 0.16 165 / 0.35);
+  --gradient-primary: linear-gradient(135deg, oklch(0.82 0.17 78), oklch(0.72 0.19 45));
+  --shadow-glow: 0 0 60px -10px oklch(0.82 0.17 78 / 0.4);
   --shadow-card: 0 1px 0 0 oklch(1 0 0 / 5%) inset, 0 20px 40px -20px oklch(0 0 0 / 0.5);
   --noise: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/></svg>");
 }
@@ -102,10 +102,10 @@
     -webkit-font-smoothing: antialiased;
     background-image: radial-gradient(
         circle at 20% -10%,
-        oklch(0.86 0.16 165 / 0.08),
+        oklch(0.82 0.17 78 / 0.10),
         transparent 50%
       ),
-      radial-gradient(circle at 90% 10%, oklch(0.72 0.18 270 / 0.06), transparent 55%);
+      radial-gradient(circle at 90% 10%, oklch(0.72 0.19 45 / 0.07), transparent 55%);
   }
   h1, h2, h3 {
     letter-spacing: -0.025em;
@@ -159,7 +159,7 @@
     border: 1px solid oklch(1 0 0 / 0.08);
   }
   .ring-glow:hover {
-    box-shadow: 0 0 0 1px oklch(0.86 0.16 165 / 0.4), 0 0 40px -8px oklch(0.86 0.16 165 / 0.4);
+    box-shadow: 0 0 0 1px oklch(0.82 0.17 78 / 0.4), 0 0 40px -8px oklch(0.82 0.17 78 / 0.4);
   }
   .animate-marquee {
     animation: marquee 40s linear infinite;
