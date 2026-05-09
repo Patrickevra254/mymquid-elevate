@@ -43,10 +43,13 @@ export function Footer() {
                 Company
               </h4>
               <ul className="space-y-3">
-                <li><Link to="/about" className="hover:text-primary">About</Link></li>
-                <li><Link to="/industries" className="hover:text-primary">Industries</Link></li>
+                <li><Link to="/about" className="hover:text-primary">About us</Link></li>
+                <li><Link to="/why-us" className="hover:text-primary">Why us</Link></li>
+                <li><Link to="/team" className="hover:text-primary">Team</Link></li>
+                <li><Link to="/careers" className="hover:text-primary">Careers</Link></li>
+                <li><Link to="/partners" className="hover:text-primary">Partners & Certifications</Link></li>
+                <li><Link to="/blog" className="hover:text-primary">Blog</Link></li>
                 <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
-                <li><a href="tel:+23408109439770" className="hover:text-primary">+234 810 943 9770</a></li>
               </ul>
             </div>
             <div>
