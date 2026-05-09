@@ -1,26 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Home } from "@/components/site/Home";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Mquid — Infrastructure that runs itself" },
+      {
+        name: "description",
+        content:
+          "Mquid is the operating layer for modern enterprises — managed IT, cybersecurity, and cloud automation in one intelligent platform.",
+      },
+      { property: "og:title", content: "Mquid — Infrastructure that runs itself" },
+      {
+        property: "og:description",
+        content:
+          "Managed IT, cybersecurity and cloud automation engineered for mission-critical operations.",
+      },
+    ],
+  }),
+  component: Home,
 });
-
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
-}
