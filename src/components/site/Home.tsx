@@ -203,7 +203,7 @@ function LogoMarquee() {
       <p className="text-center text-xs uppercase tracking-[0.2em] text-muted-foreground mb-8">
         Trusted by category-defining teams
       </p>
-      <div className="overflow-hidden mask-fade">
+      <div className="overflow-hidden" style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)", WebkitMaskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}>
         <div className="flex gap-16 animate-marquee whitespace-nowrap">
           {[...logos, ...logos].map((l, i) => (
             <span
