@@ -19,7 +19,7 @@ import { Route as CareersRouteImport } from './routes/careers'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SolutionsSlugRouteImport } from './routes/solutions.$slug'
+import { Route as SolutionsSlugRouteImport } from './routes/solutions_.$slug'
 
 const WhyUsRoute = WhyUsRouteImport.update({
   id: '/why-us',
@@ -72,9 +72,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SolutionsSlugRoute = SolutionsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => SolutionsRoute,
+  id: '/solutions_/$slug',
+  path: '/solutions/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -85,7 +85,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/industries': typeof IndustriesRoute
   '/partners': typeof PartnersRoute
-  '/solutions': typeof SolutionsRouteWithChildren
+  '/solutions': typeof SolutionsRoute
   '/team': typeof TeamRoute
   '/why-us': typeof WhyUsRoute
   '/solutions/$slug': typeof SolutionsSlugRoute
@@ -98,7 +98,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/industries': typeof IndustriesRoute
   '/partners': typeof PartnersRoute
-  '/solutions': typeof SolutionsRouteWithChildren
+  '/solutions': typeof SolutionsRoute
   '/team': typeof TeamRoute
   '/why-us': typeof WhyUsRoute
   '/solutions/$slug': typeof SolutionsSlugRoute
@@ -112,10 +112,10 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/industries': typeof IndustriesRoute
   '/partners': typeof PartnersRoute
-  '/solutions': typeof SolutionsRouteWithChildren
+  '/solutions': typeof SolutionsRoute
   '/team': typeof TeamRoute
   '/why-us': typeof WhyUsRoute
-  '/solutions/$slug': typeof SolutionsSlugRoute
+  '/solutions_/$slug': typeof SolutionsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,7 +156,7 @@ export interface FileRouteTypes {
     | '/solutions'
     | '/team'
     | '/why-us'
-    | '/solutions/$slug'
+    | '/solutions_/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -167,9 +167,10 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   IndustriesRoute: typeof IndustriesRoute
   PartnersRoute: typeof PartnersRoute
-  SolutionsRoute: typeof SolutionsRouteWithChildren
+  SolutionsRoute: typeof SolutionsRoute
   TeamRoute: typeof TeamRoute
   WhyUsRoute: typeof WhyUsRoute
+  SolutionsSlugRoute: typeof SolutionsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -244,27 +245,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/solutions/$slug': {
-      id: '/solutions/$slug'
-      path: '/$slug'
+    '/solutions_/$slug': {
+      id: '/solutions_/$slug'
+      path: '/solutions/$slug'
       fullPath: '/solutions/$slug'
       preLoaderRoute: typeof SolutionsSlugRouteImport
-      parentRoute: typeof SolutionsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface SolutionsRouteChildren {
-  SolutionsSlugRoute: typeof SolutionsSlugRoute
-}
-
-const SolutionsRouteChildren: SolutionsRouteChildren = {
-  SolutionsSlugRoute: SolutionsSlugRoute,
-}
-
-const SolutionsRouteWithChildren = SolutionsRoute._addFileChildren(
-  SolutionsRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -274,10 +263,21 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   IndustriesRoute: IndustriesRoute,
   PartnersRoute: PartnersRoute,
-  SolutionsRoute: SolutionsRouteWithChildren,
+  SolutionsRoute: SolutionsRoute,
   TeamRoute: TeamRoute,
   WhyUsRoute: WhyUsRoute,
+  SolutionsSlugRoute: SolutionsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
