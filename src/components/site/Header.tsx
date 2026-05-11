@@ -106,7 +106,7 @@ export function Header() {
                     onMouseLeave={leave}
                     className="absolute left-1/2 -translate-x-1/2 top-full pt-3 w-[340px]"
                   >
-                    <div className="glass-strong rounded-2xl p-2">
+                    <div className="menu-panel rounded-2xl p-2">
                       {n.items.map((it) => (
                         <Link
                           key={it.label}
@@ -131,7 +131,7 @@ export function Header() {
                     onMouseLeave={leave}
                     className="fixed left-1/2 -translate-x-1/2 top-[68px] pt-3 w-[min(1100px,95vw)]"
                   >
-                    <div className="glass-strong rounded-3xl p-6 sm:p-8">
+                    <div className="menu-panel rounded-3xl p-6 sm:p-8">
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                         {/* Services */}
                         <div className="md:col-span-3">
@@ -232,7 +232,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="absolute top-20 left-3 right-3 glass-strong rounded-2xl p-3 md:hidden max-h-[80vh] overflow-y-auto">
+        <div className="absolute top-20 left-3 right-3 menu-panel rounded-2xl p-3 md:hidden max-h-[80vh] overflow-y-auto">
           {/* Solutions mobile group */}
           <div>
             <button

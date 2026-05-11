@@ -141,6 +141,13 @@
     -webkit-backdrop-filter: blur(24px) saturate(160%);
     border: 1px solid oklch(1 0 0 / 0.1);
   }
+  .menu-panel {
+    background: oklch(0.14 0.015 240 / 0.97);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid oklch(1 0 0 / 0.12);
+    box-shadow: 0 30px 80px -20px oklch(0 0 0 / 0.6);
+  }
   .grid-pattern {
     background-image: linear-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px),
       linear-gradient(90deg, oklch(1 0 0 / 0.04) 1px, transparent 1px);
