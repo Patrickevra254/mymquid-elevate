@@ -60,7 +60,7 @@ function Page() {
   );
 }
 
-export const Route = createFileRoute("/solutions/$slug")({
+export const Route = createFileRoute("/solutions_/$slug")({
   head: ({ params }) => {
     const item = allBySlug[params.slug];
     const title = item ? `${item.title} — Mquid` : "Solution — Mquid";
