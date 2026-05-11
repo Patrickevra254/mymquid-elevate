@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Twitter, Linkedin, Github, ArrowUpRight } from "lucide-react";
+import logo from "@/assets/mquid-logo.png";
 
 export function Footer() {
   return (
@@ -8,12 +9,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <div className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-primary to-accent grid place-items-center">
-                <span className="text-primary-foreground font-bold">M</span>
-              </div>
-              <span className="text-lg font-semibold">Mquid</span>
-            </div>
+            <img src={logo} alt="Mquid" className="h-8 w-auto" />
             <p className="mt-4 text-muted-foreground max-w-sm text-sm leading-relaxed">
               Engineering business continuity through intelligent automation,
               cloud and security infrastructure for modern enterprises.
