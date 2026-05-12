@@ -1,18 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
-  Building2, Truck, HeartPulse, Landmark, Briefcase, HandHeart,
+  Building2, Truck, HeartPulse, Landmark, Briefcase, HandHeart, GraduationCap,
+  ArrowUpRight,
 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { industries } from "@/lib/solutions-data";
 
-const inds = [
-  { icon: Building2, name: "Industry & Manufacturing", desc: "Smart factories, OT/IT convergence, and predictive maintenance." },
-  { icon: Truck, name: "Transportation & Logistics", desc: "Fleet visibility, real-time routing, and supply-chain resilience." },
-  { icon: HeartPulse, name: "Healthcare", desc: "HIPAA-grade security, EHR integrations, and patient data platforms." },
-  { icon: Landmark, name: "Banks & Insurance", desc: "Core systems, fraud detection, and regulatory automation." },
-  { icon: Briefcase, name: "Consulting Providers", desc: "Knowledge platforms and white-glove client engagement tooling." },
-  { icon: HandHeart, name: "Non-Profit", desc: "Donor systems, secure outreach and impact reporting at low cost." },
-];
+const iconBySlug: Record<string, typeof Building2> = {
+  "industry-manufacturing": Building2,
+  "transportation-logistics": Truck,
+  "healthcare": HeartPulse,
+  "banks-insurance": Landmark,
+  "consulting-providers": Briefcase,
+  "non-profit": HandHeart,
+  "education": GraduationCap,
+};
 
 function Page() {
   return (
@@ -30,19 +33,27 @@ function Page() {
         </motion.div>
 
         <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {inds.map((ind, i) => (
-            <motion.div key={ind.name}
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="group relative card-elevated rounded-3xl p-8 overflow-hidden hover:border-primary/30 transition">
-              <div className="absolute -top-12 -right-12 h-40 w-40 bg-primary/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition" />
-              <div className="relative">
-                <ind.icon className="h-7 w-7 text-primary" />
-                <h3 className="mt-6 text-xl font-medium tracking-tight">{ind.name}</h3>
-                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{ind.desc}</p>
-              </div>
-            </motion.div>
-          ))}
+          {industries.map((ind, i) => {
+            const Icon = iconBySlug[ind.slug] ?? Building2;
+            return (
+              <motion.div key={ind.slug}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.05 }}>
+                <Link to="/solutions/$slug" params={{ slug: ind.slug }}
+                  className="group relative card-elevated rounded-3xl p-8 overflow-hidden hover:border-primary/30 transition block h-full">
+                  <div className="absolute -top-12 -right-12 h-40 w-40 bg-primary/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition" />
+                  <div className="relative">
+                    <Icon className="h-7 w-7 text-primary" />
+                    <h3 className="mt-6 text-xl font-medium tracking-tight">{ind.title}</h3>
+                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{ind.desc}</p>
+                    <span className="mt-5 inline-flex items-center gap-1 text-xs text-primary group-hover:gap-2 transition-all">
+                      Explore <ArrowUpRight className="h-3 w-3" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
     </Layout>
