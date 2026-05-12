@@ -38,11 +38,64 @@
   --font-mono: var(--font-mono);
 }
 
-
+/* ───────── LIGHT THEME (default) ───────── */
 :root {
   --radius: 0.875rem;
 
-  /* Deep premium dark fintech palette */
+  --background: oklch(0.985 0.005 90);
+  --foreground: oklch(0.18 0.02 60);
+
+  --surface: oklch(0.97 0.008 90);
+  --surface-elevated: oklch(1 0 0);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.02 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.02 60);
+
+  /* Mquid amber/gold */
+  --primary: oklch(0.74 0.17 70);
+  --primary-foreground: oklch(0.18 0.02 60);
+
+  --secondary: oklch(0.94 0.012 90);
+  --secondary-foreground: oklch(0.18 0.02 60);
+
+  --muted: oklch(0.94 0.01 90);
+  --muted-foreground: oklch(0.42 0.015 80);
+
+  --accent: oklch(0.72 0.19 45);
+  --accent-foreground: oklch(0.18 0.02 60);
+
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.99 0.005 90);
+
+  --border: oklch(0.18 0.02 60 / 10%);
+  --input: oklch(0.18 0.02 60 / 14%);
+  --ring: oklch(0.74 0.17 70);
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Instrument Serif", "Inter", serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.74 0.17 70 / 0.22), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 30%, oklch(0.72 0.19 45 / 0.16), transparent 60%);
+  --gradient-text: linear-gradient(180deg, oklch(0.22 0.02 60) 30%, oklch(0.45 0.02 60) 100%);
+  --gradient-primary: linear-gradient(135deg, oklch(0.78 0.17 75), oklch(0.7 0.19 50));
+  --shadow-glow: 0 0 60px -10px oklch(0.74 0.17 70 / 0.5);
+  --shadow-card: 0 1px 0 0 oklch(1 0 0 / 70%) inset, 0 18px 40px -22px oklch(0.18 0.02 60 / 0.18);
+
+  /* Theme-aware tints used by glass/card utilities */
+  --tint-fg: oklch(0.18 0.02 60);
+  --tint-bg: 1 1 1; /* not used directly; kept for legacy */
+  --nav-bg-scrolled: oklch(1 0 0 / 0.85);
+  --nav-bg-base: oklch(1 0 0 / 0.4);
+  --menu-bg: oklch(1 0 0 / 0.96);
+  --card-grad-from: oklch(1 0 0);
+  --card-grad-to: oklch(0.97 0.008 90);
+}
+
+/* ───────── DARK THEME ───────── */
+.dark {
   --background: oklch(0.16 0.015 240);
   --foreground: oklch(0.98 0.005 240);
 
@@ -54,7 +107,6 @@
   --popover: oklch(0.20 0.018 240);
   --popover-foreground: oklch(0.98 0.005 240);
 
-  /* Mquid amber/gold — brand signal */
   --primary: oklch(0.82 0.17 78);
   --primary-foreground: oklch(0.18 0.02 60);
 
@@ -62,7 +114,7 @@
   --secondary-foreground: oklch(0.98 0.005 240);
 
   --muted: oklch(0.24 0.02 240);
-  --muted-foreground: oklch(0.68 0.02 240);
+  --muted-foreground: oklch(0.72 0.02 240);
 
   --accent: oklch(0.72 0.19 45);
   --accent-foreground: oklch(0.16 0.02 60);
@@ -74,17 +126,19 @@
   --input: oklch(1 0 0 / 10%);
   --ring: oklch(0.82 0.17 78);
 
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Instrument Serif", "Inter", serif;
-  --font-mono: "JetBrains Mono", monospace;
-
   --gradient-hero: radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.82 0.17 78 / 0.20), transparent 60%),
     radial-gradient(ellipse 60% 50% at 80% 30%, oklch(0.72 0.19 45 / 0.14), transparent 60%);
   --gradient-text: linear-gradient(180deg, oklch(0.98 0.005 240) 30%, oklch(0.65 0.02 240) 100%);
   --gradient-primary: linear-gradient(135deg, oklch(0.82 0.17 78), oklch(0.72 0.19 45));
   --shadow-glow: 0 0 60px -10px oklch(0.82 0.17 78 / 0.4);
   --shadow-card: 0 1px 0 0 oklch(1 0 0 / 5%) inset, 0 20px 40px -20px oklch(0 0 0 / 0.5);
-  --noise: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/></svg>");
+
+  --tint-fg: oklch(1 0 0);
+  --nav-bg-scrolled: oklch(0.14 0.015 240 / 0.85);
+  --nav-bg-base: oklch(0.16 0.015 240 / 0.3);
+  --menu-bg: oklch(0.14 0.015 240 / 0.97);
+  --card-grad-from: oklch(0.22 0.02 240);
+  --card-grad-to: oklch(0.19 0.018 240);
 }
 
 @layer base {
@@ -102,10 +156,11 @@
     -webkit-font-smoothing: antialiased;
     background-image: radial-gradient(
         circle at 20% -10%,
-        oklch(0.82 0.17 78 / 0.10),
+        color-mix(in oklab, var(--primary) 14%, transparent),
         transparent 50%
       ),
-      radial-gradient(circle at 90% 10%, oklch(0.72 0.19 45 / 0.07), transparent 55%);
+      radial-gradient(circle at 90% 10%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 55%);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   h1, h2, h3 {
     letter-spacing: -0.025em;
@@ -130,27 +185,28 @@
     color: transparent;
   }
   .glass {
-    background: oklch(1 0 0 / 0.04);
+    background: color-mix(in oklab, var(--tint-fg) 4%, transparent);
     backdrop-filter: blur(20px) saturate(140%);
     -webkit-backdrop-filter: blur(20px) saturate(140%);
-    border: 1px solid oklch(1 0 0 / 0.08);
+    border: 1px solid color-mix(in oklab, var(--tint-fg) 10%, transparent);
   }
   .glass-strong {
-    background: oklch(0.20 0.018 240 / 0.7);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid oklch(1 0 0 / 0.1);
-  }
-  .menu-panel {
-    background: oklch(0.14 0.015 240 / 0.97);
+    background: var(--nav-bg-scrolled);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid oklch(1 0 0 / 0.12);
-    box-shadow: 0 30px 80px -20px oklch(0 0 0 / 0.6);
+    border: 1px solid color-mix(in oklab, var(--tint-fg) 12%, transparent);
+    box-shadow: 0 12px 40px -16px color-mix(in oklab, var(--tint-fg) 18%, transparent);
+  }
+  .menu-panel {
+    background: var(--menu-bg);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid color-mix(in oklab, var(--tint-fg) 12%, transparent);
+    box-shadow: 0 30px 80px -20px color-mix(in oklab, var(--tint-fg) 30%, transparent);
   }
   .grid-pattern {
-    background-image: linear-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, oklch(1 0 0 / 0.04) 1px, transparent 1px);
+    background-image: linear-gradient(color-mix(in oklab, var(--tint-fg) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--tint-fg) 5%, transparent) 1px, transparent 1px);
     background-size: 56px 56px;
     mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent 70%);
   }
@@ -158,15 +214,16 @@
     box-shadow: var(--shadow-glow);
   }
   .card-elevated {
-    background: linear-gradient(180deg, oklch(0.22 0.02 240), oklch(0.19 0.018 240));
-    border: 1px solid oklch(1 0 0 / 0.08);
+    background: linear-gradient(180deg, var(--card-grad-from), var(--card-grad-to));
+    border: 1px solid color-mix(in oklab, var(--tint-fg) 9%, transparent);
     box-shadow: var(--shadow-card);
   }
   .border-hairline {
-    border: 1px solid oklch(1 0 0 / 0.08);
+    border: 1px solid color-mix(in oklab, var(--tint-fg) 9%, transparent);
   }
   .ring-glow:hover {
-    box-shadow: 0 0 0 1px oklch(0.82 0.17 78 / 0.4), 0 0 40px -8px oklch(0.82 0.17 78 / 0.4);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 45%, transparent),
+      0 0 40px -8px color-mix(in oklab, var(--primary) 45%, transparent);
   }
   .animate-marquee {
     animation: marquee 40s linear infinite;
@@ -180,4 +237,18 @@
     50% { transform: translateY(-8px); }
   }
   .animate-float { animation: float 6s ease-in-out infinite; }
+
+  @keyframes loaderSpin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes loaderPulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+  .loader-orbit {
+    animation: loaderSpin 1.4s linear infinite;
+  }
+  .loader-pulse {
+    animation: loaderPulse 1.6s ease-in-out infinite;
+  }
 }
