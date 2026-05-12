@@ -1,8 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X, ArrowUpRight, ChevronDown, Target } from "lucide-react";
+import { Menu, X, ArrowUpRight, ChevronDown, Target, Sun, Moon } from "lucide-react";
 import logo from "@/assets/mquid-logo.png";
 import { services, challenges, industries } from "@/lib/solutions-data";
+import { useTheme } from "@/components/theme-provider";
 
 type Item = { to: string; params?: Record<string, string>; label: string; desc?: string };
 type NavEntry =
@@ -27,6 +28,7 @@ const nav: NavEntry[] = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { theme, toggle } = useTheme();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileMenu, setMobileMenu] = useState<string | null>(null);
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -58,8 +60,11 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center px-3 pt-3 sm:pt-5">
       <div
         className={`flex w-full max-w-6xl items-center justify-between rounded-full px-4 sm:px-6 py-2.5 transition-all duration-500 ${
-          scrolled || openMenu ? "glass-strong" : "border border-transparent"
+          scrolled || openMenu
+            ? "glass-strong shadow-lg"
+            : "border border-transparent backdrop-blur-sm"
         }`}
+        style={!scrolled && !openMenu ? { background: "var(--nav-bg-base)" } : undefined}
       >
         <Link to="/" className="flex items-center gap-2 group shrink-0">
           <img src={logo} alt="Mquid" className="h-7 w-auto" />
@@ -74,7 +79,7 @@ export function Header() {
                   key={n.to}
                   to={n.to}
                   className={`px-3.5 py-1.5 rounded-full text-sm transition-colors ${
-                    active ? "text-foreground bg-white/[0.06]" : "text-muted-foreground hover:text-foreground"
+                    active ? "text-foreground bg-foreground/5" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {n.label}
@@ -93,7 +98,7 @@ export function Header() {
                 <button
                   onClick={() => setOpenMenu(isOpen ? null : n.label)}
                   className={`inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm transition-colors ${
-                    active || isOpen ? "text-foreground bg-white/[0.06]" : "text-muted-foreground hover:text-foreground"
+                    active || isOpen ? "text-foreground bg-foreground/5" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {n.label}
@@ -215,6 +220,13 @@ export function Header() {
               0810 943 9770
             </a>
           </div>
+          <button
+            onClick={toggle}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+            className="h-9 w-9 grid place-items-center rounded-full glass hover:text-primary transition"
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <Link
             to="/contact"
             className="hidden sm:inline-flex items-center gap-1.5 bg-primary text-primary-foreground text-sm font-medium px-4 py-2 rounded-full hover:opacity-90 transition"
@@ -237,7 +249,7 @@ export function Header() {
           <div>
             <button
               onClick={() => setMobileMenu(mobileMenu === "Solutions" ? null : "Solutions")}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-foreground hover:bg-white/[0.05]"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-foreground hover:bg-foreground/5"
             >
               <span>Solutions</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${mobileMenu === "Solutions" ? "rotate-180" : ""}`} />
@@ -279,7 +291,7 @@ export function Header() {
           <div>
             <button
               onClick={() => setMobileMenu(mobileMenu === "Company" ? null : "Company")}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-foreground hover:bg-white/[0.05]"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-foreground hover:bg-foreground/5"
             >
               <span>Company</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${mobileMenu === "Company" ? "rotate-180" : ""}`} />
@@ -296,7 +308,7 @@ export function Header() {
             )}
           </div>
 
-          <Link to="/blog" className="block px-4 py-3 rounded-xl text-foreground hover:bg-white/[0.05]">Blog</Link>
+          <Link to="/blog" className="block px-4 py-3 rounded-xl text-foreground hover:bg-foreground/5">Blog</Link>
 
           <Link
             to="/contact"

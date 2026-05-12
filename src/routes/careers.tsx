@@ -46,7 +46,7 @@ function Page() {
         <h2 className="mt-16 text-2xl font-medium">Open roles</h2>
         <div className="mt-6 card-elevated rounded-3xl divide-y divide-border overflow-hidden">
           {roles.map((r) => (
-            <a key={r.title} href="#" className="group flex items-center justify-between gap-4 p-6 hover:bg-white/[0.03] transition">
+            <a key={r.title} href="#" className="group flex items-center justify-between gap-4 p-6 hover:bg-foreground/5 transition">
               <div>
                 <h3 className="text-lg font-medium group-hover:text-primary transition">{r.title}</h3>
                 <div className="mt-2 flex flex-wrap gap-4 text-xs text-muted-foreground">
