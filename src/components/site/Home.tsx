@@ -103,7 +103,7 @@ function Hero() {
           </Link>
           <Link
             to="/solutions"
-            className="inline-flex items-center justify-center gap-2 glass rounded-full px-6 py-3.5 font-medium hover:bg-white/[0.08] transition"
+            className="inline-flex items-center justify-center gap-2 glass rounded-full px-6 py-3.5 font-medium hover:bg-foreground/10 transition"
           >
             Explore platform <ArrowRight className="h-4 w-4" />
           </Link>
