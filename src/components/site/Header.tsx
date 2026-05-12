@@ -1,8 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X, ArrowUpRight, ChevronDown, Target } from "lucide-react";
+import { Menu, X, ArrowUpRight, ChevronDown, Target, Sun, Moon } from "lucide-react";
 import logo from "@/assets/mquid-logo.png";
 import { services, challenges, industries } from "@/lib/solutions-data";
+import { useTheme } from "@/components/theme-provider";
 
 type Item = { to: string; params?: Record<string, string>; label: string; desc?: string };
 type NavEntry =
@@ -27,6 +28,7 @@ const nav: NavEntry[] = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { theme, toggle } = useTheme();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileMenu, setMobileMenu] = useState<string | null>(null);
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -58,8 +60,11 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center px-3 pt-3 sm:pt-5">
       <div
         className={`flex w-full max-w-6xl items-center justify-between rounded-full px-4 sm:px-6 py-2.5 transition-all duration-500 ${
-          scrolled || openMenu ? "glass-strong" : "border border-transparent"
+          scrolled || openMenu
+            ? "glass-strong shadow-lg"
+            : "border border-transparent backdrop-blur-sm"
         }`}
+        style={!scrolled && !openMenu ? { background: "var(--nav-bg-base)" } : undefined}
       >
         <Link to="/" className="flex items-center gap-2 group shrink-0">
           <img src={logo} alt="Mquid" className="h-7 w-auto" />
