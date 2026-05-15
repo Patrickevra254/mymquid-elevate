@@ -1,10 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Phone, Mail, MapPin, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 
-function Page() {
+function Field({ label, type = "text" }: { label: string; type?: string }) {
+  return (
+    <div>
+      <label className="text-xs text-muted-foreground">{label}</label>
+      <input type={type} className="mt-1.5 w-full bg-surface border-hairline rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+    </div>
+  );
+}
+
+export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -25,7 +33,7 @@ function Page() {
               {[
                 { icon: Phone, label: "Call us", value: "+234 810 943 9770", href: "tel:+23408109439770" },
                 { icon: Mail, label: "Email", value: "hello@mymquid.com", href: "mailto:hello@mymquid.com" },
-                { icon: MapPin, label: "Headquarters", value: "Lagos, Nigeria" },
+                { icon: MapPin, label: "Headquarters", value: "Lagos, Nigeria", href: undefined },
               ].map((c) => (
                 <a key={c.label} href={c.href} className="flex items-center gap-4 group">
                   <div className="h-11 w-11 rounded-xl glass grid place-items-center">
@@ -100,24 +108,3 @@ function Page() {
     </Layout>
   );
 }
-
-function Field({ label, type = "text" }: { label: string; type?: string }) {
-  return (
-    <div>
-      <label className="text-xs text-muted-foreground">{label}</label>
-      <input type={type} className="mt-1.5 w-full bg-surface border-hairline rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
-    </div>
-  );
-}
-
-export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact — Mquid" },
-      { name: "description", content: "Schedule a free consultation. We respond in under 3 minutes." },
-      { property: "og:title", content: "Contact — Mquid" },
-      { property: "og:description", content: "Get a tailored infrastructure proposal within 48 hours." },
-    ],
-  }),
-  component: Page,
-});

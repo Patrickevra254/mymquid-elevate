@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Workflow, Cpu, Shield, Cloud, Code2, Smartphone,
@@ -16,7 +16,7 @@ const icons: Record<string, typeof Workflow> = {
   "mobile-development": Smartphone,
 };
 
-function Page() {
+export default function Solutions() {
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">
@@ -63,7 +63,7 @@ function Page() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/solutions/$slug" params={{ slug: s.slug }}
+                <Link to={`/solutions/${s.slug}`}
                   className="mt-6 inline-flex items-center gap-1.5 text-sm text-primary hover:gap-2.5 transition-all">
                   Learn more <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
@@ -82,7 +82,7 @@ function Page() {
             <motion.div key={c.slug}
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}>
-              <Link to="/solutions/$slug" params={{ slug: c.slug }}
+              <Link to={`/solutions/${c.slug}`}
                 className="block card-elevated rounded-2xl p-6 h-full hover:border-primary/40 transition group">
                 <span className="text-xs text-muted-foreground">{c.tag}</span>
                 <h3 className="mt-3 text-lg font-medium tracking-tight group-hover:text-primary transition">{c.title}</h3>
@@ -103,7 +103,7 @@ function Page() {
             <motion.div key={ind.slug}
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}>
-              <Link to="/solutions/$slug" params={{ slug: ind.slug }}
+              <Link to={`/solutions/${ind.slug}`}
                 className="block card-elevated rounded-2xl p-6 h-full hover:border-primary/40 transition group">
                 <h3 className="text-lg font-medium tracking-tight group-hover:text-primary transition">{ind.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{ind.desc}</p>
@@ -115,15 +115,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/solutions")({
-  head: () => ({
-    meta: [
-      { title: "Solutions — Mquid" },
-      { name: "description", content: "Managed services, cybersecurity, cloud, consulting, web and mobile — all under one roof." },
-      { property: "og:title", content: "Solutions — Mquid" },
-      { property: "og:description", content: "A complete operating layer for modern teams." },
-    ],
-  }),
-  component: Page,
-});

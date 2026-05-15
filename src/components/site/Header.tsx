@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X, ArrowUpRight, ChevronDown, Target, Sun, Moon } from "lucide-react";
 import logo from "@/assets/mquid-logo.png";
@@ -31,7 +31,7 @@ export function Header() {
   const { theme, toggle } = useTheme();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileMenu, setMobileMenu] = useState<string | null>(null);
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const { pathname: path } = useLocation();
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -145,8 +145,7 @@ export function Header() {
                             {services.map((s) => (
                               <li key={s.slug}>
                                 <Link
-                                  to="/solutions/$slug"
-                                  params={{ slug: s.slug }}
+                                  to={`/solutions/${s.slug}`}
                                   className="block text-sm text-muted-foreground hover:text-primary transition py-1"
                                 >
                                   {s.title}
@@ -168,8 +167,7 @@ export function Header() {
                             {challenges.map((c) => (
                               <Link
                                 key={c.slug}
-                                to="/solutions/$slug"
-                                params={{ slug: c.slug }}
+                                to={`/solutions/${c.slug}`}
                                 className="card-elevated rounded-xl p-3 hover:border-primary/40 transition group/c"
                               >
                                 <div className="text-sm font-medium group-hover/c:text-primary transition">{c.title}</div>
@@ -189,8 +187,7 @@ export function Header() {
                             {industries.map((ind) => (
                               <li key={ind.slug}>
                                 <Link
-                                  to="/solutions/$slug"
-                                  params={{ slug: ind.slug }}
+                                  to={`/solutions/${ind.slug}`}
                                   className="block text-sm text-muted-foreground hover:text-primary transition py-1"
                                 >
                                   {ind.title}
@@ -259,7 +256,7 @@ export function Header() {
                 <div>
                   <p className="px-4 pt-2 text-[11px] uppercase tracking-widest text-primary">Services</p>
                   {services.map((s) => (
-                    <Link key={s.slug} to="/solutions/$slug" params={{ slug: s.slug }}
+                    <Link key={s.slug} to={`/solutions/${s.slug}`}
                       className="block px-4 py-2 text-sm rounded-xl text-muted-foreground hover:text-primary">
                       {s.title}
                     </Link>
@@ -268,7 +265,7 @@ export function Header() {
                 <div>
                   <p className="px-4 text-[11px] uppercase tracking-widest text-primary">Business Challenges</p>
                   {challenges.map((c) => (
-                    <Link key={c.slug} to="/solutions/$slug" params={{ slug: c.slug }}
+                    <Link key={c.slug} to={`/solutions/${c.slug}`}
                       className="block px-4 py-2 text-sm rounded-xl text-muted-foreground hover:text-primary">
                       {c.title}
                     </Link>
@@ -277,7 +274,7 @@ export function Header() {
                 <div>
                   <p className="px-4 text-[11px] uppercase tracking-widest text-primary">Industry Focus</p>
                   {industries.map((ind) => (
-                    <Link key={ind.slug} to="/solutions/$slug" params={{ slug: ind.slug }}
+                    <Link key={ind.slug} to={`/solutions/${ind.slug}`}
                       className="block px-4 py-2 text-sm rounded-xl text-muted-foreground hover:text-primary">
                       {ind.title}
                     </Link>

@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import logo from "@/assets/mquid-logo.png";
 
 export function PageLoader() {
-  const isLoading = useRouterState({ select: (s) => s.isLoading });
-  const [initial, setInitial] = useState(true);
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setInitial(false), 850);
+    const t = setTimeout(() => setShow(false), 850);
     return () => clearTimeout(t);
   }, []);
-
-  const show = initial || isLoading;
 
   return (
     <AnimatePresence>

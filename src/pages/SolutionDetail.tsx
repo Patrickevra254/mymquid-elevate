@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, ArrowUpRight, CheckCircle2, Sparkles, Zap, Target,
@@ -29,11 +29,21 @@ function CategoryBadge({ kind }: { kind: ReturnType<typeof categoryOf> }) {
   );
 }
 
-function Page() {
-  const { slug } = Route.useParams();
+export default function SolutionDetail() {
+  const { slug = "" } = useParams<{ slug: string }>();
   const item = allBySlug[slug];
-  if (!item) throw notFound();
   const kind = categoryOf(slug);
+
+  if (!item) {
+    return (
+      <Layout>
+        <div className="mx-auto max-w-3xl px-6 py-32 text-center">
+          <h1 className="text-4xl font-medium">Solution not found</h1>
+          <Link to="/solutions" className="mt-6 inline-block text-primary">Browse all solutions →</Link>
+        </div>
+      </Layout>
+    );
+  }
 
   const related =
     kind === "service" ? services.filter((s) => s.slug !== slug).slice(0, 3)
@@ -272,7 +282,7 @@ function Page() {
           </h2>
           <div className="mt-6 grid sm:grid-cols-3 gap-4">
             {related.map((r) => (
-              <Link key={r.slug} to="/solutions/$slug" params={{ slug: r.slug }}
+              <Link key={r.slug} to={`/solutions/${r.slug}`}
                 className="card-elevated rounded-2xl p-5 hover:border-primary/40 transition group">
                 <div className="text-[11px] uppercase tracking-widest text-primary">{r.tag}</div>
                 <div className="mt-2 font-medium group-hover:text-primary transition">{r.title}</div>
@@ -305,28 +315,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/solutions_/$slug")({
-  head: ({ params }) => {
-    const item = allBySlug[params.slug];
-    const title = item ? `${item.title} — Mquid` : "Solution — Mquid";
-    const desc = item?.desc ?? "Mquid solution detail.";
-    return {
-      meta: [
-        { title },
-        { name: "description", content: desc },
-        { property: "og:title", content: title },
-        { property: "og:description", content: desc },
-      ],
-    };
-  },
-  component: Page,
-  notFoundComponent: () => (
-    <Layout>
-      <div className="mx-auto max-w-3xl px-6 py-32 text-center">
-        <h1 className="text-4xl font-medium">Solution not found</h1>
-        <Link to="/solutions" className="mt-6 inline-block text-primary">Browse all solutions →</Link>
-      </div>
-    </Layout>
-  ),
-});

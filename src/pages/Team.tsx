@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Linkedin } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
@@ -12,7 +12,7 @@ const team = [
   { name: "Kwame Osei", role: "Head of Product Engineering", bio: "Ships React, Node and React Native at scale for enterprise clients." },
 ];
 
-function Page() {
+export default function Team() {
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">
@@ -56,15 +56,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/team")({
-  head: () => ({
-    meta: [
-      { title: "Team — Mquid" },
-      { name: "description", content: "Meet the operators, engineers and security leaders behind Mquid." },
-      { property: "og:title", content: "Team — Mquid" },
-      { property: "og:description", content: "The people behind the platform." },
-    ],
-  }),
-  component: Page,
-});

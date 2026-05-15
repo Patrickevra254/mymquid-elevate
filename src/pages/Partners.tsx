@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, BadgeCheck } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
@@ -19,7 +19,7 @@ const certs = [
   "Microsoft Certified: Cybersecurity Architect Expert", "CKA · CKAD · CKS (Kubernetes)",
 ];
 
-function Page() {
+export default function Partners() {
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">
@@ -68,15 +68,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/partners")({
-  head: () => ({
-    meta: [
-      { title: "Partners & Certifications — Mquid" },
-      { name: "description", content: "Tier-1 platform partnerships with AWS, Microsoft, Google Cloud, Salesforce. ISO 27001, SOC 2 and PCI-DSS certified." },
-      { property: "og:title", content: "Partners & Certifications — Mquid" },
-      { property: "og:description", content: "Direct escalation paths and audit-grade compliance." },
-    ],
-  }),
-  component: Page,
-});

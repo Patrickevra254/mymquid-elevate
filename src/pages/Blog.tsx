@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
@@ -42,7 +42,7 @@ const posts = [
   },
 ];
 
-function Page() {
+export default function Blog() {
   const [feature, ...rest] = posts;
   return (
     <Layout>
@@ -106,15 +106,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/blog")({
-  head: () => ({
-    meta: [
-      { title: "Blog — Mquid" },
-      { name: "description", content: "Field notes, post-mortems and reference architectures from Mquid's engineering and security teams." },
-      { property: "og:title", content: "Blog — Mquid" },
-      { property: "og:description", content: "Deep dives on cloud, security, AI and operations." },
-    ],
-  }),
-  component: Page,
-});
