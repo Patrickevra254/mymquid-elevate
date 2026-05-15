@@ -31,7 +31,7 @@ const fadeUp = {
   transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
 };
 
-export function HomePage() {
+export function Home() {
   return (
     <Layout>
       <Hero />
@@ -245,12 +245,36 @@ function Stats() {
 }
 
 const SOLUTIONS = [
-  { icon: Workflow, title: "Managed Services", desc: "Offload day-to-day IT operations and automation to a 24/7 team." },
-  { icon: Cpu, title: "IT Consulting", desc: "Strategic advisory to align technology with measurable business outcomes." },
-  { icon: Shield, title: "Cyber Security", desc: "Proactive threat detection, hardening, and continuous compliance." },
-  { icon: Cloud, title: "Cloud Services", desc: "Architect, migrate and optimize multi-cloud workloads at scale." },
-  { icon: Code2, title: "Web Development", desc: "Performant web platforms engineered for conversion and growth." },
-  { icon: Smartphone, title: "Mobile Development", desc: "Native-grade apps shipped fast across iOS and Android." },
+  {
+    icon: Workflow,
+    title: "Managed Services",
+    desc: "Offload day-to-day IT operations and automation to a 24/7 team.",
+  },
+  {
+    icon: Cpu,
+    title: "IT Consulting",
+    desc: "Strategic advisory to align technology with measurable business outcomes.",
+  },
+  {
+    icon: Shield,
+    title: "Cyber Security",
+    desc: "Proactive threat detection, hardening, and continuous compliance.",
+  },
+  {
+    icon: Cloud,
+    title: "Cloud Services",
+    desc: "Architect, migrate and optimize multi-cloud workloads at scale.",
+  },
+  {
+    icon: Code2,
+    title: "Web Development",
+    desc: "Performant web platforms engineered for conversion and growth.",
+  },
+  {
+    icon: Smartphone,
+    title: "Mobile Development",
+    desc: "Native-grade apps shipped fast across iOS and Android.",
+  },
 ];
 
 function Solutions() {
@@ -395,17 +419,20 @@ function Industries() {
 
 const STORIES = [
   {
-    quote: "Mquid is an example of the way managed services should be done. They do their very best to make sure you succeed. We will continue to be a customer for years to come.",
+    quote:
+      "Mquid is an example of the way managed services should be done. They do their very best to make sure you succeed. We will continue to be a customer for years to come.",
     name: "Mercy Eyan",
     role: "GC-Fitness",
   },
   {
-    quote: "Mquid implemented such a powerful platform that we had no break in service when our clients were locked down during COVID-19. The transition was seamless.",
+    quote:
+      "Mquid implemented such a powerful platform that we had no break in service when our clients were locked down during COVID-19. The transition was seamless.",
     name: "Kunle Ade",
     role: "Grooming Centre",
   },
   {
-    quote: "Their proactive collaborative approach has been critical in helping us build an IT infrastructure that supports our long-term positioning strategy.",
+    quote:
+      "Their proactive collaborative approach has been critical in helping us build an IT infrastructure that supports our long-term positioning strategy.",
     name: "Peter Chucks",
     role: "Stay-Safe Facilities",
   },
