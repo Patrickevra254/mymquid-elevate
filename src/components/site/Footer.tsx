@@ -65,7 +65,7 @@ export function Footer() {
 
         <div className="mt-14 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} Mquid Technologies. All rights reserved.</p>
-          <p className="font-mono">v2026.1 · status: <span className="text-primary">operational</span></p>
+          <p className="font-mono">v2026.1.1 · status: <span className="text-primary">operational</span></p>
         </div>
       </div>
     </footer>
