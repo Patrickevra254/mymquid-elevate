@@ -1,0 +1,32 @@
+import { Routes, Route } from "react-router-dom";
+import Home from "@/pages/Home";
+import About from "@/pages/About";
+import WhyUs from "@/pages/WhyUs";
+import Team from "@/pages/Team";
+import Careers from "@/pages/Careers";
+import Partners from "@/pages/Partners";
+import Blog from "@/pages/Blog";
+import Contact from "@/pages/Contact";
+import Solutions from "@/pages/Solutions";
+import SolutionDetail from "@/pages/SolutionDetail";
+import Industries from "@/pages/Industries";
+import NotFound from "@/pages/NotFound";
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/why-us" element={<WhyUs />} />
+      <Route path="/team" element={<Team />} />
+      <Route path="/careers" element={<Careers />} />
+      <Route path="/partners" element={<Partners />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/solutions" element={<Solutions />} />
+      <Route path="/solutions/:slug" element={<SolutionDetail />} />
+      <Route path="/industries" element={<Industries />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}

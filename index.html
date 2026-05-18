@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mquid — Infrastructure that runs itself</title>
+    <meta
+      name="description"
+      content="Mquid is the operating layer for modern enterprises — managed IT, cybersecurity, and cloud automation in one intelligent platform."
+    />
+    <meta name="author" content="Mquid" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("mquid-theme");
+          if (t === "dark") document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
