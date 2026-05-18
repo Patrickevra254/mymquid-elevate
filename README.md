@@ -1,130 +1,126 @@
 # Mquid — Developer Guide
 
-Welcome! This guide explains how the project is organized so you can find your way around on day one.
+Welcome! This project uses a **standard Vite + React + React Router** setup that any React developer will recognize on day one.
 
-## Tech stack (the short version)
+## Tech stack
 
 - **React 19** — UI library
-- **TanStack Start + TanStack Router** — file-based routing with SSR (think Next.js, but lighter)
 - **Vite 7** — bundler / dev server
-- **Tailwind CSS v4** — styling (configured in `src/styles.css`, no `tailwind.config.js`)
-- **shadcn/ui** — pre-built accessible components in `src/components/ui/`
+- **React Router DOM 7** — client-side routing
+- **TanStack Query** — data fetching (when needed)
+- **Tailwind CSS v4** — styling (configured in `src/styles.css`)
+- **shadcn/ui** — accessible component library in `src/components/ui/`
 - **Framer Motion** — animations
-- **Lovable Cloud** (Supabase under the hood) — backend, when needed
+- **Lovable Cloud** — backend, when needed
 
 ## Folder structure
 
 ```
 src/
-├── routes/              ← Every file here = a page (URL)
-│   ├── __root.tsx       ← App shell (wraps every page)
-│   ├── index.tsx        ← "/"        (home page)
-│   ├── about.tsx        ← "/about"
-│   ├── contact.tsx      ← "/contact"
-│   ├── solutions.tsx    ← "/solutions"
-│   └── solutions_.$slug.tsx  ← "/solutions/anything"  ($slug = URL param)
+├── main.tsx              ← App entry point (mounts React + Router)
+├── App.tsx               ← All routes are declared here
+│
+├── pages/                ← One file per URL
+│   ├── Home.tsx          → /
+│   ├── About.tsx         → /about
+│   ├── WhyUs.tsx         → /why-us
+│   ├── Team.tsx          → /team
+│   ├── Careers.tsx       → /careers
+│   ├── Partners.tsx      → /partners
+│   ├── Blog.tsx          → /blog
+│   ├── Contact.tsx       → /contact
+│   ├── Solutions.tsx     → /solutions
+│   ├── SolutionDetail.tsx→ /solutions/:slug
+│   ├── Industries.tsx    → /industries
+│   └── NotFound.tsx      → 404
 │
 ├── components/
-│   ├── site/            ← App-specific components (Header, Footer, Home, PageLoader)
-│   ├── ui/              ← shadcn primitives (Button, Card, Dialog…) — don't edit
+│   ├── site/             ← App-specific (Header, Footer, Layout, Home, PageLoader)
+│   ├── ui/               ← shadcn primitives (don't edit)
 │   └── theme-provider.tsx
 │
-├── lib/                 ← Data + helpers (solutions-data.ts, utils.ts)
-├── hooks/               ← Reusable React hooks
-├── styles.css           ← Global styles + Tailwind theme tokens (colors, fonts)
-└── routeTree.gen.ts     ← AUTO-GENERATED. Never edit by hand.
+├── hooks/                ← Custom React hooks
+├── lib/                  ← Data + helpers
+├── assets/               ← Images, logos
+└── styles.css            ← Global styles + Tailwind theme tokens
 ```
 
-### The golden rule of routing
+## How routing works
 
-**To add a new page, create a file in `src/routes/`.** That's it.
+All routes live in **`src/App.tsx`**. Look there to see every URL in the app.
 
-| File name                       | URL                          |
-|---------------------------------|------------------------------|
-| `src/routes/pricing.tsx`        | `/pricing`                   |
-| `src/routes/blog.tsx`           | `/blog`                      |
-| `src/routes/blog.$postId.tsx`   | `/blog/:postId` (dynamic)    |
-| `src/routes/settings.profile.tsx` | `/settings/profile` (nested) |
+To add a new page:
 
-Each route file looks like this:
+1. Create a new file in `src/pages/`, e.g. `Pricing.tsx`:
 
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-import { Layout } from "@/components/site/Layout";
+   ```tsx
+   import { Layout } from "@/components/site/Layout";
+   import { useDocumentMeta } from "@/hooks/use-document-meta";
 
-export const Route = createFileRoute("/pricing")({
-  head: () => ({
-    meta: [
-      { title: "Pricing — Mquid" },
-      { name: "description", content: "Our pricing plans." },
-    ],
-  }),
-  component: PricingPage,
-});
+   export default function Pricing() {
+     useDocumentMeta({ title: "Pricing — Mquid", description: "Our plans." });
+     return (
+       <Layout>
+         <h1>Pricing</h1>
+       </Layout>
+     );
+   }
+   ```
 
-function PricingPage() {
-  return (
-    <Layout>
-      <h1>Pricing</h1>
-    </Layout>
-  );
-}
-```
+2. Register the route in `src/App.tsx`:
 
-### Linking between pages
+   ```tsx
+   import Pricing from "@/pages/Pricing";
+   // ...
+   <Route path="/pricing" element={<Pricing />} />
+   ```
 
-Always use `<Link>` from TanStack Router — **not** `<a href>` — so navigation stays fast and client-side:
+3. Link to it from anywhere with React Router's `<Link>`:
 
-```tsx
-import { Link } from "@tanstack/react-router";
+   ```tsx
+   import { Link } from "react-router-dom";
+   <Link to="/pricing">Pricing</Link>
+   ```
 
-<Link to="/about">About</Link>
-<Link to="/solutions/$slug" params={{ slug: "cybersecurity" }}>Cybersecurity</Link>
-```
+   For dynamic routes (`/solutions/:slug`):
 
-> ⚠️ Do **not** write `` <Link to={`/solutions/${slug}`}> `` — always pass `params`.
+   ```tsx
+   <Link to={`/solutions/${slug}`}>...</Link>
+   ```
 
 ## Common tasks
 
-### Add a new page
-1. Create `src/routes/your-page.tsx` (follow the template above).
-2. Add a `<Link to="/your-page">` somewhere (e.g. in `src/components/site/Header.tsx`).
-3. Save — TanStack auto-generates `routeTree.gen.ts`. Done.
-
-### Add a new section to an existing page
-Edit the page file directly. Sections are just JSX inside the page's component.
-
 ### Add a UI component
-- If shadcn has it → run `bunx shadcn@latest add <name>` (lands in `src/components/ui/`).
-- If it's app-specific → create it in `src/components/site/`.
+- shadcn primitive → `bunx shadcn@latest add <name>` (goes into `src/components/ui/`)
+- App-specific → create in `src/components/site/`
 
 ### Change colors, fonts, theme
-Edit `src/styles.css`. All design tokens live there as CSS variables (`--background`, `--primary`, etc.). Use them in components as Tailwind classes: `bg-background`, `text-primary`.
+Edit `src/styles.css`. All design tokens are CSS variables (`--background`, `--primary`, etc.). Use them as Tailwind classes: `bg-background`, `text-primary`.
 
-> ⚠️ Never hard-code colors like `bg-white` or `text-[#3b82f6]` in components. Use the semantic tokens so light/dark themes work automatically.
+> ⚠️ Never hard-code colors like `bg-white` or `text-[#3b82f6]`. Use the semantic tokens so light/dark themes work automatically.
 
 ### Add data
-Static data → `src/lib/`. See `solutions-data.ts` as the pattern.
-Dynamic data (database) → ask the lead to enable Lovable Cloud first.
+- Static → `src/lib/` (see `solutions-data.ts` for the pattern)
+- Dynamic → enable Lovable Cloud
 
 ## Running the project
 
 ```bash
-bun install      # install dependencies
-bun run dev      # start dev server (Lovable does this automatically)
+bun install   # install deps
+bun run dev   # start dev server (Lovable does this automatically)
+bun run build # production build
 ```
 
 ## Things NOT to do
 
-- ❌ Don't edit `src/routeTree.gen.ts` — it's auto-generated.
-- ❌ Don't add `BrowserRouter` or `react-router-dom` — we use TanStack Router.
-- ❌ Don't put pages in `src/pages/` — they go in `src/routes/`.
-- ❌ Don't hard-code colors — use design tokens from `src/styles.css`.
-- ❌ Don't use `<a href="/about">` for internal links — use `<Link to="/about">`.
+- ❌ Don't hard-code colors — use the design tokens in `src/styles.css`
+- ❌ Don't use `<a href="/about">` for internal links — use `<Link to="/about">`
+- ❌ Don't put pages outside `src/pages/`
+- ❌ Don't forget to register new pages in `src/App.tsx`
 
-## Where to ask for help
+## Help & docs
 
-- **TanStack Router docs:** https://tanstack.com/router
-- **shadcn/ui:** https://ui.shadcn.com
-- **Tailwind v4:** https://tailwindcss.com/docs
-- **Lovable docs:** https://docs.lovable.dev
+- React Router: https://reactrouter.com
+- shadcn/ui: https://ui.shadcn.com
+- Tailwind v4: https://tailwindcss.com/docs
+- Lovable: https://docs.lovable.dev

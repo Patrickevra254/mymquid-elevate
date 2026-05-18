@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { Twitter, Linkedin, Github, ArrowUpRight } from "lucide-react";
 import logo from "@/assets/mquid-logo.png";
 
