@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, MapPin, Briefcase } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 const roles = [
   { title: "Senior Cloud Engineer", team: "Cloud", location: "Lagos · Hybrid", type: "Full-time" },
@@ -19,7 +20,12 @@ const perks = [
   ["Wellness", "Private health, mental health & 30 days PTO."],
 ];
 
-function Page() {
+export default function Careers() {
+  useDocumentMeta({
+    title: "Careers — Mquid",
+    description: "Join the senior team building mission-critical infrastructure for Africa's enterprises.",
+  });
+
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">
@@ -73,15 +79,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/careers")({
-  head: () => ({
-    meta: [
-      { title: "Careers — Mquid" },
-      { name: "description", content: "Join the senior team building mission-critical infrastructure for Africa's enterprises." },
-      { property: "og:title", content: "Careers — Mquid" },
-      { property: "og:description", content: "Open roles in cloud, security, SRE, product and go-to-market." },
-    ],
-  }),
-  component: Page,
-});
