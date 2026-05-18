@@ -1,7 +1,8 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, BadgeCheck } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 const partners = [
   { name: "Amazon Web Services", tier: "Advanced Tier Services Partner", color: "from-orange-400/20 to-amber-300/10" },
@@ -19,7 +20,12 @@ const certs = [
   "Microsoft Certified: Cybersecurity Architect Expert", "CKA · CKAD · CKS (Kubernetes)",
 ];
 
-export function PartnersPage() {
+export default function Partners() {
+  useDocumentMeta({
+    title: "Partners & Certifications — Mquid",
+    description: "Tier-1 platform partnerships with AWS, Microsoft, Google Cloud, Salesforce. ISO 27001, SOC 2 and PCI-DSS certified.",
+  });
+
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">

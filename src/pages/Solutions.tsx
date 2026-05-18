@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Workflow, Cpu, Shield, Cloud, Code2, Smartphone,
@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { services, challenges, industries } from "@/lib/solutions-data";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 const icons: Record<string, typeof Workflow> = {
   "managed-services": Workflow,
@@ -16,7 +17,12 @@ const icons: Record<string, typeof Workflow> = {
   "mobile-development": Smartphone,
 };
 
-export function SolutionsPage() {
+export default function Solutions() {
+  useDocumentMeta({
+    title: "Solutions — Mquid",
+    description: "Managed services, cybersecurity, cloud, consulting, web and mobile — all under one roof.",
+  });
+
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">
@@ -31,7 +37,6 @@ export function SolutionsPage() {
           </p>
         </motion.div>
 
-        {/* Services */}
         <div className="mt-16 flex items-center gap-3">
           <div className="h-9 w-9 rounded-lg glass grid place-items-center"><Zap className="h-4 w-4 text-primary" /></div>
           <h2 className="text-2xl font-medium tracking-tight">Services</h2>
@@ -63,7 +68,7 @@ export function SolutionsPage() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/solutions/$slug" params={{ slug: s.slug }}
+                <Link to={`/solutions/${s.slug}`}
                   className="mt-6 inline-flex items-center gap-1.5 text-sm text-primary hover:gap-2.5 transition-all">
                   Learn more <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
@@ -72,7 +77,6 @@ export function SolutionsPage() {
           })}
         </div>
 
-        {/* Business challenges */}
         <div className="mt-20 flex items-center gap-3">
           <div className="h-9 w-9 rounded-lg glass grid place-items-center"><Target className="h-4 w-4 text-primary" /></div>
           <h2 className="text-2xl font-medium tracking-tight">Business Challenges</h2>
@@ -82,7 +86,7 @@ export function SolutionsPage() {
             <motion.div key={c.slug}
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}>
-              <Link to="/solutions/$slug" params={{ slug: c.slug }}
+              <Link to={`/solutions/${c.slug}`}
                 className="block card-elevated rounded-2xl p-6 h-full hover:border-primary/40 transition group">
                 <span className="text-xs text-muted-foreground">{c.tag}</span>
                 <h3 className="mt-3 text-lg font-medium tracking-tight group-hover:text-primary transition">{c.title}</h3>
@@ -93,7 +97,6 @@ export function SolutionsPage() {
           ))}
         </div>
 
-        {/* Industries */}
         <div className="mt-20 flex items-center gap-3">
           <div className="h-9 w-9 rounded-lg glass grid place-items-center"><Target className="h-4 w-4 text-primary" /></div>
           <h2 className="text-2xl font-medium tracking-tight">Industry Focus</h2>
@@ -103,7 +106,7 @@ export function SolutionsPage() {
             <motion.div key={ind.slug}
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}>
-              <Link to="/solutions/$slug" params={{ slug: ind.slug }}
+              <Link to={`/solutions/${ind.slug}`}
                 className="block card-elevated rounded-2xl p-6 h-full hover:border-primary/40 transition group">
                 <h3 className="text-lg font-medium tracking-tight group-hover:text-primary transition">{ind.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{ind.desc}</p>

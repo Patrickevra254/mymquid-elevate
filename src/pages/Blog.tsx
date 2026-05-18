@@ -1,48 +1,24 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 const posts = [
-  {
-    tag: "Cloud",
-    title: "Kubernetes cost in 2026: the FinOps playbook for African enterprises",
-    excerpt: "How we cut a Tier-1 bank's compute spend by 42% in 90 days without touching workload performance.",
-    read: "8 min", date: "Apr 28, 2026",
-  },
-  {
-    tag: "Security",
-    title: "Zero-trust isn't a product — it's an operating model",
-    excerpt: "Why most zero-trust rollouts fail at the identity layer, and the four controls that actually move the needle.",
-    read: "6 min", date: "Apr 14, 2026",
-  },
-  {
-    tag: "AI",
-    title: "Building an internal AI gateway for regulated industries",
-    excerpt: "Rate limits, audit trails and PII redaction — the reference architecture we ship to financial-services clients.",
-    read: "11 min", date: "Mar 30, 2026",
-  },
-  {
-    tag: "Operations",
-    title: "Inside our 3-minute incident response SLA",
-    excerpt: "The runbooks, paging stack and on-call culture that let us promise (and deliver) sub-3-minute first response.",
-    read: "5 min", date: "Mar 18, 2026",
-  },
-  {
-    tag: "Industry",
-    title: "Logistics 2026: the operating layer for cross-border trade",
-    excerpt: "From customs APIs to driver telematics — what we learned shipping infrastructure for two pan-African 3PLs.",
-    read: "9 min", date: "Mar 02, 2026",
-  },
-  {
-    tag: "Engineering",
-    title: "Pragmatic platform engineering for 50-engineer orgs",
-    excerpt: "When to invest in an internal developer platform, and the IDP starter kit we use as our baseline.",
-    read: "7 min", date: "Feb 18, 2026",
-  },
+  { tag: "Cloud", title: "Kubernetes cost in 2026: the FinOps playbook for African enterprises", excerpt: "How we cut a Tier-1 bank's compute spend by 42% in 90 days without touching workload performance.", read: "8 min", date: "Apr 28, 2026" },
+  { tag: "Security", title: "Zero-trust isn't a product — it's an operating model", excerpt: "Why most zero-trust rollouts fail at the identity layer, and the four controls that actually move the needle.", read: "6 min", date: "Apr 14, 2026" },
+  { tag: "AI", title: "Building an internal AI gateway for regulated industries", excerpt: "Rate limits, audit trails and PII redaction — the reference architecture we ship to financial-services clients.", read: "11 min", date: "Mar 30, 2026" },
+  { tag: "Operations", title: "Inside our 3-minute incident response SLA", excerpt: "The runbooks, paging stack and on-call culture that let us promise (and deliver) sub-3-minute first response.", read: "5 min", date: "Mar 18, 2026" },
+  { tag: "Industry", title: "Logistics 2026: the operating layer for cross-border trade", excerpt: "From customs APIs to driver telematics — what we learned shipping infrastructure for two pan-African 3PLs.", read: "9 min", date: "Mar 02, 2026" },
+  { tag: "Engineering", title: "Pragmatic platform engineering for 50-engineer orgs", excerpt: "When to invest in an internal developer platform, and the IDP starter kit we use as our baseline.", read: "7 min", date: "Feb 18, 2026" },
 ];
 
-export function BlogPage() {
+export default function Blog() {
+  useDocumentMeta({
+    title: "Blog — Mquid",
+    description: "Field notes, post-mortems and reference architectures from Mquid's engineering and security teams.",
+  });
+
   const [feature, ...rest] = posts;
   return (
     <Layout>

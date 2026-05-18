@@ -1,4 +1,4 @@
-import { Link, notFound } from "@tanstack/react-router";
+import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, ArrowUpRight, CheckCircle2, Sparkles, Zap, Target,
@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { allBySlug, categoryOf, services, challenges, industries } from "@/lib/solutions-data";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
+import NotFound from "@/pages/NotFound";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -29,11 +31,18 @@ function CategoryBadge({ kind }: { kind: ReturnType<typeof categoryOf> }) {
   );
 }
 
-export function SolutionDetailPage({ slug }: { slug: string }) {
+export default function SolutionDetail() {
+  const { slug = "" } = useParams<{ slug: string }>();
   const item = allBySlug[slug];
-  if (!item) throw notFound();
-  const kind = categoryOf(slug);
 
+  useDocumentMeta({
+    title: item ? `${item.title} — Mquid` : "Solution — Mquid",
+    description: item?.desc ?? "Mquid solution detail.",
+  });
+
+  if (!item) return <NotFound />;
+
+  const kind = categoryOf(slug);
   const related =
     kind === "service" ? services.filter((s) => s.slug !== slug).slice(0, 3)
     : kind === "challenge" ? challenges.filter((s) => s.slug !== slug).slice(0, 3)
@@ -41,7 +50,6 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
 
   return (
     <Layout>
-      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern" />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "var(--gradient-hero)" }} />
@@ -77,7 +85,6 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
         </div>
       </section>
 
-      {/* Overview + outcomes/CTA */}
       <section className="mx-auto max-w-6xl px-6 pb-10">
         <div className="grid lg:grid-cols-3 gap-4">
           <motion.div {...fadeUp} className="lg:col-span-2 card-elevated rounded-3xl p-8">
@@ -121,7 +128,6 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
         </div>
       </section>
 
-      {/* Capabilities grid */}
       {item.capabilities && item.capabilities.length > 0 && (
         <section className="mx-auto max-w-6xl px-6 py-14">
           <motion.div {...fadeUp} className="flex items-center gap-3">
@@ -151,7 +157,6 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
         </section>
       )}
 
-      {/* Process / methodology */}
       {item.process && item.process.length > 0 && (
         <section className="mx-auto max-w-6xl px-6 py-14">
           <motion.div {...fadeUp} className="flex items-center gap-3">
@@ -179,7 +184,6 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
         </section>
       )}
 
-      {/* Industry samples */}
       {item.samples && item.samples.length > 0 && (
         <section className="mx-auto max-w-6xl px-6 py-14">
           <motion.div {...fadeUp} className="flex items-end justify-between gap-4 flex-wrap">
@@ -233,7 +237,6 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
         </section>
       )}
 
-      {/* FAQs */}
       {item.faqs && item.faqs.length > 0 && (
         <section className="mx-auto max-w-4xl px-6 py-14">
           <motion.div {...fadeUp} className="flex items-center gap-3">
@@ -263,7 +266,6 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
         </section>
       )}
 
-      {/* Related */}
       {related.length > 0 && (
         <section className="mx-auto max-w-6xl px-6 py-14">
           <h2 className="text-sm uppercase tracking-widest text-muted-foreground">
@@ -271,7 +273,7 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
           </h2>
           <div className="mt-6 grid sm:grid-cols-3 gap-4">
             {related.map((r) => (
-              <Link key={r.slug} to="/solutions/$slug" params={{ slug: r.slug }}
+              <Link key={r.slug} to={`/solutions/${r.slug}`}
                 className="card-elevated rounded-2xl p-5 hover:border-primary/40 transition group">
                 <div className="text-[11px] uppercase tracking-widest text-primary">{r.tag}</div>
                 <div className="mt-2 font-medium group-hover:text-primary transition">{r.title}</div>
@@ -282,7 +284,6 @@ export function SolutionDetailPage({ slug }: { slug: string }) {
         </section>
       )}
 
-      {/* Final CTA */}
       <section className="mx-auto max-w-6xl px-6 pb-24">
         <motion.div {...fadeUp}
           className="relative overflow-hidden rounded-3xl p-10 sm:p-14 card-elevated text-center">

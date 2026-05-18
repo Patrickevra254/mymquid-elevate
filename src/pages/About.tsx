@@ -1,9 +1,15 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Target, Eye, Sparkles } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
-export function AboutPage() {
+export default function About() {
+  useDocumentMeta({
+    title: "About — Mquid",
+    description: "A decade of building resilient enterprises through intelligent automation.",
+  });
+
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">

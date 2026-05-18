@@ -2,17 +2,14 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Phone, Mail, MapPin, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
-function Field({ label, type = "text" }: { label: string; type?: string }) {
-  return (
-    <div>
-      <label className="text-xs text-muted-foreground">{label}</label>
-      <input type={type} className="mt-1.5 w-full bg-surface border-hairline rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
-    </div>
-  );
-}
+export default function Contact() {
+  useDocumentMeta({
+    title: "Contact — Mquid",
+    description: "Schedule a free consultation. We respond in under 3 minutes.",
+  });
 
-export function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -106,5 +103,14 @@ export function ContactPage() {
         </div>
       </section>
     </Layout>
+  );
+}
+
+function Field({ label, type = "text" }: { label: string; type?: string }) {
+  return (
+    <div>
+      <label className="text-xs text-muted-foreground">{label}</label>
+      <input type={type} className="mt-1.5 w-full bg-surface border-hairline rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+    </div>
   );
 }

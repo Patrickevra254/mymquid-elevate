@@ -1,18 +1,36 @@
 import { useEffect, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { useLocation, useNavigation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import logo from "@/assets/mquid-logo.png";
 
 export function PageLoader() {
-  const isLoading = useRouterState({ select: (s) => s.isLoading });
+  // react-router-dom doesn't have a built-in "loading" state for data-less routes,
+  // so we show a brief loader on initial mount and on each route change.
+  const location = useLocation();
+  // useNavigation may not be available outside a data router; guard it.
+  let navState: string = "idle";
+  try {
+    navState = useNavigation().state;
+  } catch {
+    navState = "idle";
+  }
+
   const [initial, setInitial] = useState(true);
+  const [routeLoading, setRouteLoading] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setInitial(false), 850);
     return () => clearTimeout(t);
   }, []);
 
-  const show = initial || isLoading;
+  useEffect(() => {
+    if (initial) return;
+    setRouteLoading(true);
+    const t = setTimeout(() => setRouteLoading(false), 250);
+    return () => clearTimeout(t);
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const show = initial || routeLoading || navState === "loading";
 
   return (
     <AnimatePresence>
