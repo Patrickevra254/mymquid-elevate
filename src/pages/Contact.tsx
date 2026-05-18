@@ -1,10 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Phone, Mail, MapPin, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
-function Page() {
+export default function Contact() {
+  useDocumentMeta({
+    title: "Contact — Mquid",
+    description: "Schedule a free consultation. We respond in under 3 minutes.",
+  });
+
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -109,15 +114,3 @@ function Field({ label, type = "text" }: { label: string; type?: string }) {
     </div>
   );
 }
-
-export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact — Mquid" },
-      { name: "description", content: "Schedule a free consultation. We respond in under 3 minutes." },
-      { property: "og:title", content: "Contact — Mquid" },
-      { property: "og:description", content: "Get a tailored infrastructure proposal within 48 hours." },
-    ],
-  }),
-  component: Page,
-});

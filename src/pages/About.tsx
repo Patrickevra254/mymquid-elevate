@@ -1,9 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Target, Eye, Sparkles } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
-function Page() {
+export default function About() {
+  useDocumentMeta({
+    title: "About — Mquid",
+    description: "A decade of building resilient enterprises through intelligent automation.",
+  });
+
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">
@@ -65,15 +71,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About — Mquid" },
-      { name: "description", content: "A decade of building resilient enterprises through intelligent automation." },
-      { property: "og:title", content: "About — Mquid" },
-      { property: "og:description", content: "Mission, vision and the team behind Mquid." },
-    ],
-  }),
-  component: Page,
-});

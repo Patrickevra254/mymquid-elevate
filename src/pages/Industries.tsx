@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Building2, Truck, HeartPulse, Landmark, Briefcase, HandHeart, GraduationCap,
@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { industries } from "@/lib/solutions-data";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 const iconBySlug: Record<string, typeof Building2> = {
   "industry-manufacturing": Building2,
@@ -17,7 +18,12 @@ const iconBySlug: Record<string, typeof Building2> = {
   "education": GraduationCap,
 };
 
-function Page() {
+export default function Industries() {
+  useDocumentMeta({
+    title: "Industries — Mquid",
+    description: "Industry-specific IT blueprints for healthcare, finance, manufacturing, logistics, and more.",
+  });
+
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">
@@ -39,7 +45,7 @@ function Page() {
               <motion.div key={ind.slug}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.05 }}>
-                <Link to="/solutions/$slug" params={{ slug: ind.slug }}
+                <Link to={`/solutions/${ind.slug}`}
                   className="group relative card-elevated rounded-3xl p-8 overflow-hidden hover:border-primary/30 transition block h-full">
                   <div className="absolute -top-12 -right-12 h-40 w-40 bg-primary/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition" />
                   <div className="relative">
@@ -59,15 +65,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/industries")({
-  head: () => ({
-    meta: [
-      { title: "Industries — Mquid" },
-      { name: "description", content: "Industry-specific IT blueprints for healthcare, finance, manufacturing, logistics, and more." },
-      { property: "og:title", content: "Industries — Mquid" },
-      { property: "og:description", content: "Specialized infrastructure for regulated, mission-critical sectors." },
-    ],
-  }),
-  component: Page,
-});

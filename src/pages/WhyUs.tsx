@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Zap, ShieldCheck, Users, Clock, TrendingUp, Award } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 const reasons = [
   { icon: Zap, title: "Speed of execution", desc: "From kickoff to production in weeks, not quarters. Our pods ship outcomes, not slideware." },
@@ -12,7 +13,12 @@ const reasons = [
   { icon: Award, title: "Tier-1 partnerships", desc: "Certified partners with AWS, Microsoft, Google Cloud and Salesforce. Direct escalation paths included." },
 ];
 
-function Page() {
+export default function WhyUs() {
+  useDocumentMeta({
+    title: "Why Mquid — Senior teams, real outcomes",
+    description: "Six reasons enterprises pick Mquid over legacy SIs and agencies.",
+  });
+
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-6 py-16">
@@ -52,15 +58,3 @@ function Page() {
     </Layout>
   );
 }
-
-export const Route = createFileRoute("/why-us")({
-  head: () => ({
-    meta: [
-      { title: "Why Mquid — Senior teams, real outcomes" },
-      { name: "description", content: "Six reasons enterprises pick Mquid over legacy SIs and agencies." },
-      { property: "og:title", content: "Why Mquid" },
-      { property: "og:description", content: "Senior-only delivery, security-first, outcomes over outputs." },
-    ],
-  }),
-  component: Page,
-});
