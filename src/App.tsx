@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -11,6 +12,8 @@ import Solutions from "@/pages/Solutions";
 import SolutionDetail from "@/pages/SolutionDetail";
 import Industries from "@/pages/Industries";
 import NotFound from "@/pages/NotFound";
+
+const AdminRouter = lazy(() => import("@/admin/AdminRouter"));
 
 export default function App() {
   return (
@@ -26,6 +29,14 @@ export default function App() {
       <Route path="/solutions" element={<Solutions />} />
       <Route path="/solutions/:slug" element={<SolutionDetail />} />
       <Route path="/industries" element={<Industries />} />
+      <Route
+        path="/admin/*"
+        element={
+          <Suspense fallback={null}>
+            <AdminRouter />
+          </Suspense>
+        }
+      />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
