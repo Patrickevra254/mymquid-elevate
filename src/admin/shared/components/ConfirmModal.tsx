@@ -12,7 +12,7 @@ import {
 type Props = {
   open: boolean;
   title: string;
-  description: string;
+  description?: string;
   confirmLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
