@@ -10,7 +10,7 @@ type AuthState = {
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   clearError: () => void;
 };
 
@@ -29,11 +29,12 @@ export const useAuthStore = create<AuthState>()(
           const { user, token } = await authApi.login(email, password);
           set({ user, token, isAuthenticated: true, isLoading: false });
         } catch (err) {
-          set({ error: (err as Error).message, isLoading: false });
+          set({ error: err instanceof Error ? err.message : "Login failed", isLoading: false });
         }
       },
 
-      logout: () => {
+      logout: async () => {
+        await authApi.logout();
         set({ user: null, token: null, isAuthenticated: false });
       },
 

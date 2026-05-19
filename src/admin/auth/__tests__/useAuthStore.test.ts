@@ -43,7 +43,7 @@ describe("useAuthStore", () => {
 
   it("logout clears user and token", async () => {
     await useAuthStore.getState().login("admin@mymquid.com", "mock-admin-dev-only");
-    useAuthStore.getState().logout();
+    await useAuthStore.getState().logout();
     const { isAuthenticated, user, token } = useAuthStore.getState();
     expect(isAuthenticated).toBe(false);
     expect(user).toBeNull();
