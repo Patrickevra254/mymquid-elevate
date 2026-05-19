@@ -39,6 +39,7 @@ export const useBlogStore = create<BlogState>((set, get) => ({
       set({ posts, isLoading: false });
     } catch {
       set({ isLoading: false });
+      toast.error("Failed to load posts.");
     }
   },
 
@@ -58,7 +59,8 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     try {
       await blogApi.delete(id);
       toast.success("Post deleted.");
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to delete post.");
     }
   },
