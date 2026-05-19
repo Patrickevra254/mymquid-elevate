@@ -18,7 +18,7 @@ export function QuickActions() {
         <Button
           variant="outline"
           className="w-full justify-start"
-          onClick={() => window.open("/", "_blank")}
+          onClick={() => window.open("/", "_blank", "noopener,noreferrer")}
         >
           <ExternalLink className="mr-2 h-4 w-4" /> View Public Site
         </Button>
