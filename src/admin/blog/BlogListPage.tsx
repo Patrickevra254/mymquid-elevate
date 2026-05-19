@@ -35,10 +35,14 @@ export default function BlogListPage() {
     fetchPosts();
   }, [filters, fetchPosts]);
 
-  const { page, totalPages, from, to, nextPage, prevPage } = usePagination(
+  const { page, totalPages, from, to, nextPage, prevPage, goToPage } = usePagination(
     posts.length,
     10
   );
+
+  useEffect(() => {
+    goToPage(1);
+  }, [filters, goToPage]);
 
   const paginatedPosts = posts.slice(from, to);
 
@@ -64,8 +68,10 @@ export default function BlogListPage() {
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
+          <label htmlFor="blog-search" className="sr-only">Search posts</label>
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
+            id="blog-search"
             className="pl-9"
             placeholder="Search posts..."
             value={searchInput}

@@ -59,6 +59,7 @@ export function BlogTable({ posts, isLoading, onDelete }: Props) {
             variant="ghost"
             size="icon"
             title="Preview"
+            aria-label={`Preview "${post.title}"`}
             onClick={() => navigate(`/admin/blog/preview/${post.id}`)}
           >
             <Eye className="h-4 w-4" />
@@ -67,6 +68,7 @@ export function BlogTable({ posts, isLoading, onDelete }: Props) {
             variant="ghost"
             size="icon"
             title="Edit"
+            aria-label={`Edit "${post.title}"`}
             onClick={() => navigate(`/admin/blog/edit/${post.id}`)}
           >
             <Edit className="h-4 w-4" />
@@ -76,6 +78,7 @@ export function BlogTable({ posts, isLoading, onDelete }: Props) {
               variant="ghost"
               size="icon"
               title="Delete"
+              aria-label={`Delete "${post.title}"`}
               className="text-destructive hover:text-destructive"
               onClick={() => onDelete(post.id)}
             >
