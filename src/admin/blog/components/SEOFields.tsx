@@ -22,8 +22,9 @@ export function SEOFields({ value, onChange }: Props) {
       <h4 className="text-sm font-semibold">SEO</h4>
 
       <div className="space-y-1">
-        <Label className="text-xs">Meta Title</Label>
+        <Label htmlFor="seo-meta-title" className="text-xs">Meta Title</Label>
         <Input
+          id="seo-meta-title"
           placeholder="Page title for search engines"
           value={value.metaTitle}
           onChange={(e) => update("metaTitle", e.target.value)}
@@ -32,8 +33,9 @@ export function SEOFields({ value, onChange }: Props) {
       </div>
 
       <div className="space-y-1">
-        <Label className="text-xs">Meta Description</Label>
+        <Label htmlFor="seo-meta-description" className="text-xs">Meta Description</Label>
         <Textarea
+          id="seo-meta-description"
           placeholder="Short description for search results"
           value={value.metaDescription}
           onChange={(e) => update("metaDescription", e.target.value)}
