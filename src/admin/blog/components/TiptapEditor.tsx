@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
@@ -54,10 +55,22 @@ export function TiptapEditor({ value, onChange, className }: Props) {
     },
   });
 
+  useEffect(() => {
+    if (!editor) return;
+    const current = JSON.stringify(editor.getJSON());
+    if (current !== value) {
+      try {
+        editor.commands.setContent(JSON.parse(value));
+      } catch {
+        editor.commands.setContent(value || "");
+      }
+    }
+  }, [value, editor]);
+
   const addLink = () => {
     const url = window.prompt("Enter URL");
-    if (url && editor) {
-      editor.chain().focus().setLink({ href: url }).run();
+    if (url?.trim() && editor) {
+      editor.chain().focus().setLink({ href: url.trim() }).run();
     }
   };
 
