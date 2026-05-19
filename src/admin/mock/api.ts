@@ -1,9 +1,8 @@
-import type { BlogPost } from "../types";
+import type { BlogPost, BlogStatus } from "../types";
 import {
   MOCK_USERS,
   MOCK_CREDENTIALS,
   MOCK_POSTS,
-  MOCK_STATS,
   MOCK_ACTIVITY,
   MOCK_CHART_DATA,
   MOCK_NOTIFICATIONS,
@@ -12,6 +11,11 @@ import {
 const delay = (ms = 300) => new Promise((res) => setTimeout(res, ms));
 
 let posts = [...MOCK_POSTS];
+
+// Exported for test cleanup only — not used in production code
+export const resetPosts = () => {
+  posts = [...MOCK_POSTS];
+};
 
 export const authApi = {
   login: async (email: string, password: string) => {
@@ -29,7 +33,7 @@ export const authApi = {
 };
 
 type BlogFilters = {
-  status?: string;
+  status?: BlogStatus;
   category?: string;
   search?: string;
 };
@@ -62,7 +66,7 @@ export const blogApi = {
       posts[idx] = { ...post, updatedAt: now };
       return posts[idx];
     }
-    const newPost = { ...post, createdAt: now, updatedAt: now };
+    const newPost = { ...post, id: post.id || String(Date.now()), createdAt: now, updatedAt: now };
     posts.push(newPost);
     return newPost;
   },
@@ -77,7 +81,6 @@ export const dashboardApi = {
   getStats: async () => {
     await delay();
     return {
-      ...MOCK_STATS,
       totalPosts: posts.length,
       published: posts.filter((p) => p.status === "published").length,
       drafts: posts.filter((p) => p.status === "draft").length,

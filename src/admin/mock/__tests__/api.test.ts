@@ -1,9 +1,13 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { authApi, blogApi, dashboardApi } from "../api";
+import { authApi, blogApi, dashboardApi, notificationApi, resetPosts } from "../api";
+
+beforeEach(() => {
+  resetPosts();
+});
 
 describe("authApi", () => {
   it("returns user and token for valid credentials", async () => {
-    const result = await authApi.login("admin@mymquid.com", "admin123");
+    const result = await authApi.login("admin@mymquid.com", "mock-admin-dev-only");
     expect(result.user.role).toBe("super_admin");
     expect(result.token).toBe("mock-jwt-admin");
   });
@@ -43,5 +47,17 @@ describe("dashboardApi", () => {
     expect(stats).toHaveProperty("published");
     expect(stats).toHaveProperty("drafts");
     expect(stats).toHaveProperty("scheduled");
+  });
+});
+
+describe("notificationApi", () => {
+  it("returns notifications array with correct shape", async () => {
+    const notifications = await notificationApi.getAll();
+    expect(Array.isArray(notifications)).toBe(true);
+    expect(notifications.length).toBeGreaterThan(0);
+    expect(notifications[0]).toHaveProperty("id");
+    expect(notifications[0]).toHaveProperty("type");
+    expect(notifications[0]).toHaveProperty("read");
+    expect(notifications[0]).toHaveProperty("createdAt");
   });
 });

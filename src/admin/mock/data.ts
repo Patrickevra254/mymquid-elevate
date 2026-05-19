@@ -12,9 +12,10 @@ export const MOCK_USERS: AdminUser[] = [
   { id: "2", name: "Jane Staff", email: "staff@mymquid.com", role: "staff" },
 ];
 
+// Dev-only mock credentials — never valid on any real system
 export const MOCK_CREDENTIALS: Record<string, string> = {
-  "admin@mymquid.com": "admin123",
-  "staff@mymquid.com": "staff123",
+  "admin@mymquid.com": "mock-admin-dev-only",
+  "staff@mymquid.com": "mock-staff-dev-only",
 };
 
 export const MOCK_POSTS: BlogPost[] = [
