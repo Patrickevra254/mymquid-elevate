@@ -21,8 +21,7 @@ export function Sidebar() {
         className={cn(
           "fixed left-0 top-0 z-30 flex h-full flex-col border-r bg-card transition-all duration-300",
           sidebarCollapsed ? "w-16" : "w-64",
-          "hidden lg:flex",
-          sidebarOpen && "flex"
+          sidebarOpen ? "flex" : "hidden lg:flex"
         )}
       >
         {/* Logo */}
@@ -34,6 +33,7 @@ export function Sidebar() {
           )}
           <button
             onClick={toggleCollapsed}
+            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             className="ml-auto rounded-md p-1.5 hover:bg-accent"
           >
             {sidebarCollapsed ? (

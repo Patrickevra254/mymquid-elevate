@@ -26,10 +26,14 @@ export function TopNav() {
   };
 
   const initials = user?.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase() ?? "A";
+    ? user.name
+        .trim()
+        .split(" ")
+        .filter(Boolean)
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase() || "A"
+    : "A";
 
   return (
     <header className="flex h-16 items-center justify-between border-b bg-card px-4 lg:px-6">
@@ -50,6 +54,7 @@ export function TopNav() {
         <Button
           variant="ghost"
           size="icon"
+          aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         >
           {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
@@ -60,6 +65,7 @@ export function TopNav() {
           variant="ghost"
           size="icon"
           className="relative"
+          aria-label={unread > 0 ? `Notifications, ${unread} unread` : "Notifications"}
           onClick={() => navigate("/admin/notifications")}
         >
           <Bell className="h-4 w-4" />
