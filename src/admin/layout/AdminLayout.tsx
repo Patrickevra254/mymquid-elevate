@@ -1,11 +1,18 @@
 import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "./Sidebar";
 import { TopNav } from "./TopNav";
 import { useUIStore } from "./useUIStore";
+import { useNotificationStore } from "../notifications/useNotificationStore";
 
 export default function AdminLayout() {
   const collapsed = useUIStore((s) => s.sidebarCollapsed);
+  const fetchNotifications = useNotificationStore((s) => s.fetchNotifications);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   return (
     <div className="flex min-h-screen bg-background">
