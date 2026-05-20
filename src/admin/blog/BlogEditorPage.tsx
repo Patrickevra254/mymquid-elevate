@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -58,6 +58,7 @@ export default function BlogEditorPage() {
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
+  const originalCreatedAt = useRef<string | null>(null);
 
   const {
     register,
@@ -103,6 +104,7 @@ export default function BlogEditorPage() {
       setValue("tags", post.tags);
       setValue("scheduledAt", post.scheduledAt ?? "");
       setValue("seo", post.seo);
+      originalCreatedAt.current = post.createdAt;
       setLoading(false);
     }).catch(() => {
       navigate("/admin/blog");
@@ -114,7 +116,7 @@ export default function BlogEditorPage() {
     ...data,
     status: data.status as BlogStatus,
     featuredImage: undefined,
-    createdAt: new Date().toISOString(),
+    createdAt: originalCreatedAt.current ?? new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     author: { id: user?.id ?? "1", name: user?.name ?? "Admin" },
   });
@@ -190,11 +192,11 @@ export default function BlogEditorPage() {
             <Input
               id="post-slug"
               placeholder="post-url-slug"
-              {...register("slug")}
-              onChange={(e) => {
-                setSlugManuallyEdited(true);
-                setValue("slug", e.target.value);
-              }}
+              {...register("slug", {
+                onChange: () => {
+                  setSlugManuallyEdited(true);
+                },
+              })}
             />
             {errors.slug && <p className="text-destructive text-xs">{errors.slug.message}</p>}
             <p className="text-xs text-muted-foreground">
@@ -227,13 +229,13 @@ export default function BlogEditorPage() {
         <div className="space-y-4">
           <div className="rounded-lg border p-4 space-y-4">
             <div className="space-y-1">
-              <Label>Status</Label>
+              <Label htmlFor="post-status">Status</Label>
               <Controller
                 name="status"
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
+                    <SelectTrigger id="post-status">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
