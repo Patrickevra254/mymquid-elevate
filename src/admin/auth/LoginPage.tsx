@@ -9,6 +9,7 @@ import { useAuthStore } from "./useAuthStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import logo from "@/assets/mquid-logo.png";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -46,8 +47,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">MyMquid Admin</h1>
-          <p className="text-muted-foreground text-sm mt-1">Sign in to your account</p>
+          <img src={logo} alt="Mquid" className="h-9 w-auto mx-auto mb-4" />
+          <p className="text-muted-foreground text-sm">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

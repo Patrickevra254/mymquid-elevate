@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "./useUIStore";
 import { SidebarNav } from "./SidebarNav";
+import logo from "@/assets/mquid-logo.png";
 
 export function Sidebar() {
   const { sidebarCollapsed, sidebarOpen, toggleCollapsed, setSidebarOpen } = useUIStore();
@@ -27,8 +28,8 @@ export function Sidebar() {
         {/* Logo */}
         <div className="flex h-16 items-center justify-between border-b px-4">
           {!sidebarCollapsed && (
-            <Link to="/admin/dashboard" className="font-bold text-lg">
-              MyMquid
+            <Link to="/admin/dashboard">
+              <img src={logo} alt="Mquid" className="h-7 w-auto" />
             </Link>
           )}
           <button
