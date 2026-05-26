@@ -1,107 +1,125 @@
+import api from "@/lib/axios";
 import type { BlogPost, BlogStatus } from "../types";
-import {
-  MOCK_USERS,
-  MOCK_CREDENTIALS,
-  MOCK_POSTS,
-  MOCK_ACTIVITY,
-  MOCK_CHART_DATA,
-  MOCK_NOTIFICATIONS,
-} from "./data";
 
-const delay = (ms = 300) => new Promise((res) => setTimeout(res, ms));
-
-let posts = [...MOCK_POSTS];
-
-// Exported for test cleanup only — not used in production code
-export const resetPosts = () => {
-  posts = [...MOCK_POSTS];
-};
+// ─── Auth ─────────────────────────────────────────────────────────────────────
 
 export const authApi = {
   login: async (email: string, password: string) => {
-    await delay();
-    const user = MOCK_USERS.find((u) => u.email === email);
-    if (!user || MOCK_CREDENTIALS[email] !== password) {
-      throw new Error("Invalid email or password");
-    }
-    const token = user.role === "super_admin" ? "mock-jwt-admin" : "mock-jwt-staff";
-    return { user, token };
+    const { data } = await api.post("/auth/login", { email, password });
+    // Real API returns { access_token, user } — normalise to { token, user }
+    return { user: data.user, token: data.access_token };
   },
+
   logout: async () => {
-    await delay(100);
+    // No server logout endpoint — client-side clear only
   },
 };
 
+// ─── Blog ─────────────────────────────────────────────────────────────────────
+
 type BlogFilters = {
-  status?: BlogStatus;
+  status?: BlogStatus | "";
   category?: string;
   search?: string;
 };
 
 export const blogApi = {
-  getAll: async (filters: BlogFilters) => {
-    await delay();
-    let result = [...posts];
-    if (filters.status) result = result.filter((p) => p.status === filters.status);
-    if (filters.category) result = result.filter((p) => p.category === filters.category);
-    if (filters.search) {
-      const q = filters.search.toLowerCase();
-      result = result.filter((p) => p.title.toLowerCase().includes(q));
+  getAll: async (filters: BlogFilters): Promise<BlogPost[]> => {
+    const params: Record<string, string> = {};
+    if (filters.status) params.status = filters.status;
+    if (filters.category) params.category = filters.category;
+    if (filters.search) params.search = filters.search;
+    const { data } = await api.get("/blog", { params });
+    return Array.isArray(data) ? data : (data.data ?? []);
+  },
+
+  getById: async (id: string): Promise<BlogPost> => {
+    const { data } = await api.get(`/blog/${id}`);
+    return data;
+  },
+
+  save: async (post: BlogPost): Promise<BlogPost> => {
+    if (post.id) {
+      const { data } = await api.put(`/blog/${post.id}`, post);
+      return data;
     }
-    return result;
+    const { data } = await api.post("/blog", post);
+    return data;
   },
 
-  getById: async (id: string) => {
-    await delay();
-    const post = posts.find((p) => p.id === id);
-    if (!post) throw new Error("Post not found");
-    return post;
-  },
-
-  save: async (post: BlogPost) => {
-    await delay();
-    const idx = posts.findIndex((p) => p.id === post.id);
-    const now = new Date().toISOString();
-    if (idx >= 0) {
-      posts[idx] = { ...post, updatedAt: now };
-      return posts[idx];
-    }
-    const newPost = { ...post, id: post.id || String(Date.now()), createdAt: now, updatedAt: now };
-    posts.push(newPost);
-    return newPost;
-  },
-
-  delete: async (id: string) => {
-    await delay();
-    posts = posts.filter((p) => p.id !== id);
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/blog/${id}`);
   },
 };
+
+// ─── Dashboard ────────────────────────────────────────────────────────────────
 
 export const dashboardApi = {
   getStats: async () => {
-    await delay();
-    return {
-      totalPosts: posts.length,
-      published: posts.filter((p) => p.status === "published").length,
-      drafts: posts.filter((p) => p.status === "draft").length,
-      scheduled: posts.filter((p) => p.status === "scheduled").length,
-    };
+    const { data } = await api.get("/dashboard/stats");
+    return data;
   },
 
   getRecentActivity: async () => {
-    await delay();
-    return MOCK_ACTIVITY;
+    const { data } = await api.get("/dashboard/activity");
+    return Array.isArray(data) ? data : (data.data ?? []);
   },
 
   getChartData: async () => {
-    await delay();
-    return MOCK_CHART_DATA;
+    const { data } = await api.get("/dashboard/chart");
+    return Array.isArray(data) ? data : (data.data ?? []);
   },
 };
 
+// ─── Notifications ────────────────────────────────────────────────────────────
+
 export const notificationApi = {
   getAll: async () => {
-    await delay();
-    return MOCK_NOTIFICATIONS;
+    const { data } = await api.get("/notifications");
+    return Array.isArray(data) ? data : (data.data ?? []);
+  },
+
+  markAsRead: async (id: string) => {
+    await api.patch(`/notifications/${id}/read`);
+  },
+
+  markAllAsRead: async () => {
+    await api.patch("/notifications/read-all");
+  },
+};
+
+// ─── Profile ──────────────────────────────────────────────────────────────────
+
+export const profileApi = {
+  get: async () => {
+    const { data } = await api.get("/profile");
+    return data;
+  },
+
+  update: async (payload: { name: string; email: string }) => {
+    const { data } = await api.put("/profile", payload);
+    return data;
+  },
+
+  changePassword: async (payload: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
+    await api.put("/profile/password", payload);
+  },
+};
+
+// ─── Upload ───────────────────────────────────────────────────────────────────
+
+export const uploadApi = {
+  upload: async (file: File, type: "avatar" | "blog-image" | "og-image"): Promise<string> => {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("type", type);
+    const { data } = await api.post("/upload", form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return data.url as string;
   },
 };
