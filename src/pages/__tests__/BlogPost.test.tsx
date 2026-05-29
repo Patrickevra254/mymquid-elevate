@@ -37,7 +37,8 @@ describe("BlogPost", () => {
   it("renders category and author", async () => {
     mockApi.getPublic.mockResolvedValueOnce(published);
     renderWithSlug(published[0].slug);
-    await screen.findByText(published[0].category);
+    const categoryElements = await screen.findAllByText(published[0].category);
+    expect(categoryElements.length).toBeGreaterThanOrEqual(1);
     await screen.findByText(published[0].author.name);
   });
 

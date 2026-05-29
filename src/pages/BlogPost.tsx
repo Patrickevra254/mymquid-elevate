@@ -93,9 +93,15 @@ export default function BlogPost() {
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Left: article body */}
           <article className="lg:col-span-2 space-y-6">
+            <span className="text-xs uppercase tracking-widest text-primary">
+              {post.category}
+            </span>
             <h1 className="text-4xl sm:text-5xl font-medium tracking-tighter leading-tight">
               {post.title}
             </h1>
+            <p className="text-sm text-muted-foreground">
+              {authorName} · {format(new Date(post.createdAt), "MMM d, yyyy")}
+            </p>
             {metaDescription && (
               <p className="text-lg text-muted-foreground leading-relaxed">
                 {metaDescription}
