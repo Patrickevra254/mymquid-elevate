@@ -9,11 +9,16 @@ import { blogApi } from "@/admin/mock/api";
 import type { BlogPost } from "@/admin/types";
 
 function toCard(post: BlogPost) {
+  const excerpt =
+    post.seo?.metaDescription ||
+    (post as unknown as Record<string, string>).metaDescription ||
+    "Read more…";
   return {
-    tag: post.category || post.tags[0] || "Blog",
+    tag: post.category || post.tags?.[0] || "Blog",
     title: post.title,
-    excerpt: post.seo.metaDescription || "Read more…",
+    excerpt,
     date: format(new Date(post.createdAt), "MMM d, yyyy"),
+    slug: post.slug,
   };
 }
 
@@ -26,10 +31,11 @@ export default function Blog() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
 
   useEffect(() => {
-    blogApi.getAll({ status: "published", category: "", search: "" }).then(setPosts);
+    blogApi.getPublic().then(setPosts).catch(console.error);
   }, []);
 
-  const [featurePost, ...restPosts] = posts;
+  const [featurePost, ...allRest] = posts;
+  const restPosts = allRest.slice(0, 3);
   const feature = featurePost ? toCard(featurePost) : null;
 
   return (
@@ -47,7 +53,7 @@ export default function Blog() {
         </motion.div>
 
         {feature && (
-          <a href="#" className="group mt-14 block card-elevated rounded-3xl overflow-hidden">
+          <Link to={`/blog/${feature.slug}`} className="group mt-14 block card-elevated rounded-3xl overflow-hidden">
             <div className="grid md:grid-cols-2">
               <div className="relative aspect-[16/10] md:aspect-auto bg-gradient-to-br from-primary/30 via-accent/20 to-transparent">
                 <div className="absolute inset-0 grid-pattern opacity-40" />
@@ -65,7 +71,7 @@ export default function Blog() {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         )}
 
         {restPosts.length > 0 && (
@@ -73,16 +79,27 @@ export default function Blog() {
             {restPosts.map((p) => {
               const card = toCard(p);
               return (
-                <a key={p.id} href="#" className="group card-elevated rounded-3xl p-7 flex flex-col">
+                <Link key={p.id} to={`/blog/${card.slug}`} className="group card-elevated rounded-3xl p-7 flex flex-col">
                   <span className="text-xs uppercase tracking-widest text-primary">{card.tag}</span>
                   <h3 className="mt-4 text-lg font-medium group-hover:text-primary transition">{card.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{card.excerpt}</p>
                   <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
                     <span>{card.date}</span>
                   </div>
-                </a>
+                </Link>
               );
             })}
+          </div>
+        )}
+
+        {posts.length > 4 && (
+          <div className="mt-10 text-center">
+            <Link
+              to="/blog/all"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-medium px-6 py-3.5 rounded-full hover:opacity-90 transition glow"
+            >
+              View all posts <ArrowUpRight className="h-4 w-4" />
+            </Link>
           </div>
         )}
 
