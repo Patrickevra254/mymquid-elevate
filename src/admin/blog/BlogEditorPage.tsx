@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowLeft, Loader2, Save, Eye } from "lucide-react";
+import { ArrowLeft, Loader2, Save, Eye, X, ImageIcon } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +20,7 @@ import { SEOFields } from "./components/SEOFields";
 import { CategoryTagInput } from "./components/CategoryTagInput";
 import { SkeletonLoader } from "../shared/components/SkeletonLoader";
 import { useBlogStore } from "./useBlogStore";
-import { blogApi } from "../mock/api";
+import { blogApi, uploadApi } from "../mock/api";
 import { useAuthStore } from "../auth/useAuthStore";
 import type { BlogPost, BlogStatus } from "../types";
 
@@ -31,9 +32,10 @@ const schema = z.object({
   category: z.string().min(1, "Category is required"),
   tags: z.array(z.string()),
   scheduledAt: z.string().optional(),
+  featuredImage: z.string().optional(),
   seo: z.object({
-    metaTitle: z.string(),
-    metaDescription: z.string(),
+    metaTitle: z.string().max(60, "Meta title must be 60 characters or fewer"),
+    metaDescription: z.string().max(160, "Meta description must be 160 characters or fewer"),
     ogImage: z.string().optional(),
   }),
 });
@@ -58,6 +60,7 @@ export default function BlogEditorPage() {
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const originalCreatedAt = useRef<string | null>(null);
 
   const {
@@ -77,6 +80,7 @@ export default function BlogEditorPage() {
       category: "",
       tags: [],
       scheduledAt: "",
+      featuredImage: "",
       seo: { metaTitle: "", metaDescription: "" },
     },
   });
@@ -103,6 +107,7 @@ export default function BlogEditorPage() {
       setValue("category", post.category);
       setValue("tags", post.tags);
       setValue("scheduledAt", post.scheduledAt ?? "");
+      setValue("featuredImage", post.featuredImage ?? "");
       setValue("seo", post.seo);
       originalCreatedAt.current = post.createdAt;
       setLoading(false);
@@ -112,14 +117,28 @@ export default function BlogEditorPage() {
   }, [id, isEdit, navigate, setValue]);
 
   const buildPost = (data: FormValues): BlogPost => ({
-    id: id ?? String(Date.now()),
+    id: id ?? "",
     ...data,
     status: data.status as BlogStatus,
-    featuredImage: undefined,
+    featuredImage: data.featuredImage || undefined,
     createdAt: originalCreatedAt.current ?? new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     author: { id: user?.id ?? "1", name: user?.name ?? "Admin" },
   });
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageUploading(true);
+    try {
+      const url = await uploadApi.upload(file, "blog-image");
+      setValue("featuredImage", url);
+    } catch {
+      toast.error("Image upload failed.");
+    } finally {
+      setImageUploading(false);
+    }
+  };
 
   const handleSave = async (data: FormValues, overrideStatus?: BlogStatus) => {
     setSaving(true);
@@ -127,6 +146,8 @@ export default function BlogEditorPage() {
       const post = buildPost({ ...data, status: overrideStatus ?? data.status });
       await savePost(post);
       navigate("/admin/blog");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save post.");
     } finally {
       setSaving(false);
     }
@@ -157,7 +178,12 @@ export default function BlogEditorPage() {
             variant="outline"
             size="sm"
             disabled={saving}
-            onClick={handleSubmit((data) => handleSave(data, "draft"))}
+            onClick={handleSubmit(
+              (data) => handleSave(data, "draft"),
+              (errs) => {
+                toast.error("Please fix the form errors before saving.");
+              }
+            )}
           >
             {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Save className="mr-1.5 h-4 w-4" />}
             Save Draft
@@ -165,7 +191,12 @@ export default function BlogEditorPage() {
           <Button
             size="sm"
             disabled={saving}
-            onClick={handleSubmit((data) => handleSave(data, "published"))}
+            onClick={handleSubmit(
+              (data) => handleSave(data, "published"),
+              (errs) => {
+                toast.error("Please fix the form errors before publishing.");
+              }
+            )}
           >
             {saving && <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />}
             Publish
@@ -174,6 +205,18 @@ export default function BlogEditorPage() {
       </div>
 
       <h1 className="text-xl font-bold">{isEdit ? "Edit Post" : "New Post"}</h1>
+
+      {Object.keys(errors).length > 0 && (
+        <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive space-y-1">
+          <p className="font-semibold">Please fix the following errors:</p>
+          {errors.title && <p>• Title: {errors.title.message}</p>}
+          {errors.slug && <p>• Slug: {errors.slug.message}</p>}
+          {errors.content && <p>• Content: {errors.content.message}</p>}
+          {errors.category && <p>• Category: {errors.category.message}</p>}
+          {errors.seo?.metaTitle && <p>• Meta title: {errors.seo.metaTitle.message}</p>}
+          {errors.seo?.metaDescription && <p>• Meta description: {errors.seo.metaDescription.message}</p>}
+        </div>
+      )}
 
       <form
         onSubmit={(e) => e.preventDefault()}
@@ -277,6 +320,43 @@ export default function BlogEditorPage() {
             />
             {errors.category && (
               <p className="text-destructive text-xs mt-1">{errors.category.message}</p>
+            )}
+          </div>
+
+          <div className="rounded-lg border p-4 space-y-3">
+            <p className="text-sm font-medium">Featured Image</p>
+            {watch("featuredImage") ? (
+              <div className="relative">
+                <img
+                  src={watch("featuredImage")}
+                  alt="Featured"
+                  className="w-full rounded-md object-cover aspect-video"
+                />
+                <button
+                  type="button"
+                  onClick={() => setValue("featuredImage", "")}
+                  className="absolute top-2 right-2 rounded-full bg-background/80 p-1 hover:bg-background transition"
+                  aria-label="Remove image"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : imageUploading ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Uploading…
+              </div>
+            ) : (
+              <label className="flex items-center gap-2 cursor-pointer rounded-md border border-dashed p-3 text-sm text-muted-foreground hover:bg-accent transition">
+                <ImageIcon className="h-4 w-4" />
+                Upload image
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={handleImageUpload}
+                />
+              </label>
             )}
           </div>
         </div>
