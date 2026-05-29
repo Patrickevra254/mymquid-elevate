@@ -7,6 +7,8 @@ import Team from "@/pages/Team";
 import Careers from "@/pages/Careers";
 import Partners from "@/pages/Partners";
 import Blog from "@/pages/Blog";
+import BlogAll from "@/pages/BlogAll";
+import BlogPost from "@/pages/BlogPost";
 import Contact from "@/pages/Contact";
 import Solutions from "@/pages/Solutions";
 import SolutionDetail from "@/pages/SolutionDetail";
@@ -25,6 +27,8 @@ export default function App() {
       <Route path="/careers" element={<Careers />} />
       <Route path="/partners" element={<Partners />} />
       <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/all" element={<BlogAll />} />
+      <Route path="/blog/:slug" element={<BlogPost />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/solutions" element={<Solutions />} />
       <Route path="/solutions/:slug" element={<SolutionDetail />} />
