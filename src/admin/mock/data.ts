@@ -1,5 +1,5 @@
 import type {
-  AdminUser,
+  UserWithStats,
   BlogPost,
   ActivityEvent,
   DashboardStats,
@@ -7,9 +7,27 @@ import type {
   Notification,
 } from "../types";
 
-export const MOCK_USERS: AdminUser[] = [
-  { id: "1", name: "Patrick Evra", email: "admin@mymquid.com", role: "super_admin" },
-  { id: "2", name: "Jane Staff", email: "staff@mymquid.com", role: "staff" },
+export const MOCK_USERS: UserWithStats[] = [
+  {
+    id: "1",
+    name: "Patrick Evra",
+    email: "admin@mymquid.com",
+    role: "super_admin",
+    active: true,
+    lastLogin: "2026-05-19T08:00:00Z",
+    createdAt: "2026-01-01T00:00:00Z",
+    stats: { published: 5, drafts: 1, scheduled: 2, total: 8 },
+  },
+  {
+    id: "2",
+    name: "Jane Staff",
+    email: "staff@mymquid.com",
+    role: "staff",
+    active: true,
+    lastLogin: "2026-05-18T14:00:00Z",
+    createdAt: "2026-02-15T00:00:00Z",
+    stats: { published: 3, drafts: 3, scheduled: 0, total: 6 },
+  },
 ];
 
 // Dev-only mock credentials — never valid on any real system

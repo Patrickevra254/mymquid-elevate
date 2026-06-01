@@ -8,6 +8,30 @@ export type AdminUser = {
   avatar?: string;
 };
 
+export type UserWithStats = AdminUser & {
+  active: boolean;
+  lastLogin: string;
+  createdAt: string;
+  stats: {
+    published: number;
+    drafts: number;
+    scheduled: number;
+    total: number;
+  };
+};
+
+export type CreateUserPayload = {
+  name: string;
+  email: string;
+  role: AdminRole;
+};
+
+export type UpdateUserPayload = {
+  name: string;
+  email: string;
+  role: AdminRole;
+};
+
 export type BlogStatus = "draft" | "published" | "scheduled";
 
 export type BlogPost = {
