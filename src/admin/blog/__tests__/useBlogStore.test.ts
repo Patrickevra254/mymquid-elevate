@@ -6,15 +6,20 @@ import type { BlogPost } from "../../types";
 vi.mock("../../mock/api", () => ({
   blogApi: {
     getAll: vi.fn(),
+    getPublic: vi.fn(),
     getById: vi.fn(),
     save: vi.fn(),
     delete: vi.fn(),
   },
+  notificationApi: {
+    getAll: vi.fn().mockResolvedValue([]),
+  },
 }));
 
 import { blogApi } from "../../mock/api";
-const mockBlogApi = blogApi as {
+const mockBlogApi = blogApi as unknown as {
   getAll: ReturnType<typeof vi.fn>;
+  getPublic: ReturnType<typeof vi.fn>;
   getById: ReturnType<typeof vi.fn>;
   save: ReturnType<typeof vi.fn>;
   delete: ReturnType<typeof vi.fn>;

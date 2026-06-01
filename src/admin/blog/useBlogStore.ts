@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { blogApi } from "../mock/api";
 import type { BlogPost, BlogStatus } from "../types";
 import { toast } from "sonner";
+import { useNotificationStore } from "../notifications/useNotificationStore";
 
 type BlogFilters = {
   status: string;
@@ -46,19 +47,16 @@ export const useBlogStore = create<BlogState>((set, get) => ({
   setCurrentPost: (post) => set({ currentPost: post }),
 
   savePost: async (post) => {
-    try {
-      await blogApi.save(post);
-      toast.success(post.status === "published" ? "Post published!" : "Post saved.");
-    } catch (err) {
-      toast.error("Failed to save post.");
-      throw err;
-    }
+    await blogApi.save(post);
+    toast.success(post.status === "published" ? "Post published!" : "Post saved.");
+    useNotificationStore.getState().fetchNotifications().catch(() => {});
   },
 
   deletePost: async (id) => {
     try {
       await blogApi.delete(id);
       toast.success("Post deleted.");
+      useNotificationStore.getState().fetchNotifications().catch(() => {});
     } catch (err) {
       console.error(err);
       toast.error("Failed to delete post.");
