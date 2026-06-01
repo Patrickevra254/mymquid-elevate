@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { BlogPost, BlogStatus } from "../types";
+import type { BlogPost, BlogStatus, UserWithStats, CreateUserPayload, UpdateUserPayload } from "../types";
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
@@ -33,18 +33,56 @@ export const blogApi = {
     return Array.isArray(data) ? data : (data.data ?? []);
   },
 
+  getPublic: async (): Promise<BlogPost[]> => {
+    const { data } = await api.get("/blog/public");
+    return Array.isArray(data) ? data : (data.data ?? []);
+  },
+
   getById: async (id: string): Promise<BlogPost> => {
     const { data } = await api.get(`/blog/${id}`);
     return data;
   },
 
   save: async (post: BlogPost): Promise<BlogPost> => {
-    if (post.id) {
-      const { data } = await api.put(`/blog/${post.id}`, post);
+    // Backend expects flat fields — no nested seo object,
+    // and createdAt/updatedAt/author are server-managed
+    const {
+      id,
+      seo,
+      featuredImage,
+      scheduledAt,
+      createdAt: _c,
+      updatedAt: _u,
+      author: _a,
+      ...rest
+    } = post;
+
+    const payload: Record<string, unknown> = {
+      ...rest,
+      metaTitle: seo.metaTitle,
+      metaDescription: seo.metaDescription,
+      ...(seo.ogImage ? { ogImage: seo.ogImage } : {}),
+      ...(featuredImage ? { featuredImage } : {}),
+      ...(scheduledAt ? { scheduledAt } : {}),
+    };
+
+    try {
+      if (id) {
+        const { data } = await api.put(`/blog/${id}`, payload);
+        return data;
+      }
+      const { data } = await api.post("/blog", payload);
       return data;
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: unknown; status?: number } };
+      const apiErrors = axiosErr?.response?.data as
+        | { errors?: { field: string; message: string }[]; message?: string }
+        | undefined;
+      if (apiErrors?.errors?.length) {
+        throw new Error(apiErrors.errors.map((e) => e.message).join(" · "));
+      }
+      throw new Error(apiErrors?.message ?? "Failed to save post.");
     }
-    const { data } = await api.post("/blog", post);
-    return data;
   },
 
   delete: async (id: string): Promise<void> => {
@@ -121,5 +159,46 @@ export const uploadApi = {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return data.url as string;
+  },
+};
+
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+export const userApi = {
+  getAll: async (): Promise<UserWithStats[]> => {
+    const { data } = await api.get("/users");
+    return Array.isArray(data) ? data : (data.data ?? []);
+  },
+
+  getById: async (id: string): Promise<UserWithStats> => {
+    const { data } = await api.get(`/users/${id}`);
+    return data;
+  },
+
+  create: async (payload: CreateUserPayload): Promise<UserWithStats> => {
+    const { data } = await api.post("/users", payload);
+    return data;
+  },
+
+  update: async (id: string, payload: UpdateUserPayload): Promise<UserWithStats> => {
+    const { data } = await api.put(`/users/${id}`, payload);
+    return data;
+  },
+
+  updateStatus: async (id: string, active: boolean): Promise<void> => {
+    await api.patch(`/users/${id}/status`, { active });
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/users/${id}`);
+  },
+
+  resetPassword: async (id: string): Promise<void> => {
+    await api.post(`/users/${id}/reset-password`);
+  },
+
+  getPosts: async (id: string): Promise<BlogPost[]> => {
+    const { data } = await api.get(`/users/${id}/posts`);
+    return Array.isArray(data) ? data : (data.data ?? []);
   },
 };
