@@ -38,7 +38,7 @@ export const useUserStore = create<UserState>((set) => ({
   },
 
   fetchUser: async (id) => {
-    set({ isLoading: true });
+    set({ isLoading: true, selectedUser: null });
     try {
       const selectedUser = await userApi.getById(id);
       set({ selectedUser, isLoading: false });
@@ -49,12 +49,10 @@ export const useUserStore = create<UserState>((set) => ({
   },
 
   fetchUserPosts: async (id) => {
-    set({ isLoading: true });
     try {
       const userPosts = await userApi.getPosts(id);
-      set({ userPosts, isLoading: false });
+      set({ userPosts });
     } catch {
-      set({ isLoading: false });
       toast.error("Failed to load user posts.");
     }
   },

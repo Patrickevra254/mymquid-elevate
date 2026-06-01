@@ -46,6 +46,7 @@ export function AddUserModal({ open, user, isLoading, onSubmit, onClose }: Props
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -97,7 +98,7 @@ export function AddUserModal({ open, user, isLoading, onSubmit, onClose }: Props
           <div className="space-y-2">
             <Label>Role</Label>
             <Select
-              defaultValue={user?.role ?? "staff"}
+              value={watch("role")}
               onValueChange={(v) => setValue("role", v as AdminRole)}
             >
               <SelectTrigger>

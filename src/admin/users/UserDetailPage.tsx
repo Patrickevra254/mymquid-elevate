@@ -36,8 +36,7 @@ export default function UserDetailPage() {
 
   useEffect(() => {
     if (!id) { navigate("/admin/users"); return; }
-    fetchUser(id);
-    fetchUserPosts(id);
+    void Promise.all([fetchUser(id), fetchUserPosts(id)]);
   }, [id, fetchUser, fetchUserPosts, navigate]);
 
   if (isLoading || !selectedUser) {
