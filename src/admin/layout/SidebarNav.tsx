@@ -4,19 +4,25 @@ import {
   FileText,
   Bell,
   User,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "./useUIStore";
-
-const navItems = [
-  { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/admin/blog", icon: FileText, label: "Blog" },
-  { to: "/admin/notifications", icon: Bell, label: "Notifications" },
-  { to: "/admin/profile", icon: User, label: "Profile" },
-];
+import { useAuthStore } from "../auth/useAuthStore";
 
 export function SidebarNav() {
   const collapsed = useUIStore((s) => s.sidebarCollapsed);
+  const user = useAuthStore((s) => s.user);
+
+  const navItems = [
+    { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { to: "/admin/blog", icon: FileText, label: "Blog" },
+    ...(user?.role === "super_admin"
+      ? [{ to: "/admin/users", icon: Users, label: "Users" }]
+      : []),
+    { to: "/admin/notifications", icon: Bell, label: "Notifications" },
+    { to: "/admin/profile", icon: User, label: "Profile" },
+  ];
 
   return (
     <nav className="flex-1 space-y-1 px-2 py-4">

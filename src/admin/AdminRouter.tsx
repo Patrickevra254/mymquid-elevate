@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthGuard } from "./auth/authGuard";
+import { RoleGuard } from "./auth/roleGuard";
 
 const LoginPage = lazy(() => import("./auth/LoginPage"));
 const ForgotPasswordPage = lazy(() => import("./auth/ForgotPasswordPage"));
@@ -12,6 +13,8 @@ const BlogEditorPage = lazy(() => import("./blog/BlogEditorPage"));
 const BlogPreviewPage = lazy(() => import("./blog/BlogPreviewPage"));
 const NotificationsPage = lazy(() => import("./notifications/NotificationsPage"));
 const ProfilePage = lazy(() => import("./profile/ProfilePage"));
+const UsersListPage = lazy(() => import("./users/UsersListPage"));
+const UserDetailPage = lazy(() => import("./users/UserDetailPage"));
 
 function PageLoader() {
   return (
@@ -39,6 +42,11 @@ export default function AdminRouter() {
             <Route path="blog/preview/:id" element={<BlogPreviewPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="profile" element={<ProfilePage />} />
+
+            <Route element={<RoleGuard allowedRoles={["super_admin"]} />}>
+              <Route path="users" element={<UsersListPage />} />
+              <Route path="users/:id" element={<UserDetailPage />} />
+            </Route>
           </Route>
         </Route>
 
