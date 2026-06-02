@@ -180,7 +180,7 @@ export default function BlogEditorPage() {
             disabled={saving}
             onClick={handleSubmit(
               (data) => handleSave(data, "draft"),
-              (errs) => {
+              () => {
                 toast.error("Please fix the form errors before saving.");
               }
             )}
@@ -193,7 +193,7 @@ export default function BlogEditorPage() {
             disabled={saving}
             onClick={handleSubmit(
               (data) => handleSave(data, "published"),
-              (errs) => {
+              () => {
                 toast.error("Please fix the form errors before publishing.");
               }
             )}
@@ -209,12 +209,20 @@ export default function BlogEditorPage() {
       {Object.keys(errors).length > 0 && (
         <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive space-y-1">
           <p className="font-semibold">Please fix the following errors:</p>
-          {errors.title && <p>• Title: {errors.title.message}</p>}
-          {errors.slug && <p>• Slug: {errors.slug.message}</p>}
-          {errors.content && <p>• Content: {errors.content.message}</p>}
-          {errors.category && <p>• Category: {errors.category.message}</p>}
-          {errors.seo?.metaTitle && <p>• Meta title: {errors.seo.metaTitle.message}</p>}
-          {errors.seo?.metaDescription && <p>• Meta description: {errors.seo.metaDescription.message}</p>}
+          {(function flatErrors(obj: Record<string, unknown>, prefix = ""): string[] {
+            return Object.entries(obj).flatMap(([key, val]) => {
+              const label = prefix ? `${prefix} › ${key}` : key;
+              if (val && typeof val === "object" && "message" in val) {
+                return [`• ${label}: ${(val as { message: string }).message}`];
+              }
+              if (val && typeof val === "object") {
+                return flatErrors(val as Record<string, unknown>, label);
+              }
+              return [];
+            });
+          })(errors as unknown as Record<string, unknown>).map((msg, i) => (
+            <p key={i}>{msg}</p>
+          ))}
         </div>
       )}
 
