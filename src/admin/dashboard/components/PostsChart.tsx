@@ -23,17 +23,28 @@ export function PostsChart({ data }: Props) {
         <BarChart data={formatted} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
           <XAxis
             dataKey="date"
-            tick={{ fontSize: 11 }}
+            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
             tickLine={false}
             axisLine={false}
             interval={4}
           />
-          <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
-          <Tooltip
-            contentStyle={{ fontSize: 12, borderRadius: 8 }}
-            cursor={{ fill: "hsl(var(--muted))" }}
+          <YAxis
+            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+            tickLine={false}
+            axisLine={false}
+            allowDecimals={false}
           />
-          <Bar dataKey="posts" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+          <Tooltip
+            contentStyle={{
+              fontSize: 12,
+              borderRadius: 8,
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+              color: "var(--foreground)",
+            }}
+            cursor={{ fill: "var(--muted)" }}
+          />
+          <Bar dataKey="posts" fill="var(--primary)" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
