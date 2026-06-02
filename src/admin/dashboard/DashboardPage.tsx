@@ -61,7 +61,8 @@ export default function DashboardPage() {
       if (statsRes.status === "fulfilled") setStats(statsRes.value);
 
       const apiActivity = activityRes.status === "fulfilled" ? activityRes.value : [];
-      setActivity(apiActivity.length > 0 ? apiActivity : activityFromPosts(posts));
+      const resolvedActivity = (apiActivity.length > 0 ? apiActivity : activityFromPosts(posts)).slice(0, 5);
+      setActivity(resolvedActivity);
 
       const apiChart = chartRes.status === "fulfilled" ? chartRes.value : [];
       setChartData(apiChart.length > 0 ? apiChart : chartFromPosts(posts));
