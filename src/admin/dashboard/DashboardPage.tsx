@@ -48,21 +48,28 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      dashboardApi.getStats(),
-      dashboardApi.getRecentActivity(),
-      dashboardApi.getChartData(),
-      blogApi.getAll({}),
-    ])
-      .then(([s, a, c, posts]) => {
-        setStats(s);
-        // Use real activity if backend returns data, otherwise derive from blog posts
-        setActivity(a.length > 0 ? a : activityFromPosts(posts));
-        // Use real chart data if backend returns data, otherwise derive from blog posts
-        setChartData(c.length > 0 ? c : chartFromPosts(posts));
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    const load = async () => {
+      const [statsRes, activityRes, chartRes, postsRes] = await Promise.allSettled([
+        dashboardApi.getStats(),
+        dashboardApi.getRecentActivity(),
+        dashboardApi.getChartData(),
+        blogApi.getAll({}),
+      ]);
+
+      const posts = postsRes.status === "fulfilled" ? postsRes.value : [];
+
+      if (statsRes.status === "fulfilled") setStats(statsRes.value);
+
+      const apiActivity = activityRes.status === "fulfilled" ? activityRes.value : [];
+      setActivity(apiActivity.length > 0 ? apiActivity : activityFromPosts(posts));
+
+      const apiChart = chartRes.status === "fulfilled" ? chartRes.value : [];
+      setChartData(apiChart.length > 0 ? apiChart : chartFromPosts(posts));
+
+      setLoading(false);
+    };
+
+    load();
   }, []);
 
   if (loading) return <SkeletonLoader rows={8} />;
