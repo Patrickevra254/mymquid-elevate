@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -207,22 +208,8 @@ export default function BlogEditorPage() {
       <h1 className="text-xl font-bold">{isEdit ? "Edit Post" : "New Post"}</h1>
 
       {Object.keys(errors).length > 0 && (
-        <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive space-y-1">
-          <p className="font-semibold">Please fix the following errors:</p>
-          {(function flatErrors(obj: Record<string, unknown>, prefix = ""): string[] {
-            return Object.entries(obj).flatMap(([key, val]) => {
-              const label = prefix ? `${prefix} › ${key}` : key;
-              if (val && typeof val === "object" && "message" in val) {
-                return [`• ${label}: ${(val as { message: string }).message}`];
-              }
-              if (val && typeof val === "object") {
-                return flatErrors(val as Record<string, unknown>, label);
-              }
-              return [];
-            });
-          })(errors as unknown as Record<string, unknown>).map((msg, i) => (
-            <p key={i}>{msg}</p>
-          ))}
+        <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <p className="font-semibold">Some fields need attention — please review the fields highlighted in red below.</p>
         </div>
       )}
 
@@ -234,7 +221,12 @@ export default function BlogEditorPage() {
         <div className="space-y-4 lg:col-span-2">
           <div className="space-y-1">
             <Label htmlFor="post-title">Title</Label>
-            <Input id="post-title" placeholder="Post title..." {...register("title")} />
+            <Input
+              id="post-title"
+              placeholder="Post title..."
+              {...register("title")}
+              className={cn(errors.title && "border-destructive focus-visible:ring-destructive")}
+            />
             {errors.title && <p className="text-destructive text-xs">{errors.title.message}</p>}
           </div>
 
@@ -248,6 +240,7 @@ export default function BlogEditorPage() {
                   setSlugManuallyEdited(true);
                 },
               })}
+              className={cn(errors.slug && "border-destructive focus-visible:ring-destructive")}
             />
             {errors.slug && <p className="text-destructive text-xs">{errors.slug.message}</p>}
             <p className="text-xs text-muted-foreground">
@@ -271,7 +264,7 @@ export default function BlogEditorPage() {
             name="seo"
             control={control}
             render={({ field }) => (
-              <SEOFields value={field.value} onChange={field.onChange} />
+              <SEOFields value={field.value} onChange={field.onChange} errors={errors.seo} />
             )}
           />
         </div>
@@ -307,7 +300,7 @@ export default function BlogEditorPage() {
             )}
           </div>
 
-          <div className="rounded-lg border p-4">
+          <div className={cn("rounded-lg border p-4", errors.category && "border-destructive")}>
             <Controller
               name="category"
               control={control}
