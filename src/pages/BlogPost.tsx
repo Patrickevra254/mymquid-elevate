@@ -40,12 +40,42 @@ export default function BlogPost() {
   if (loading) {
     return (
       <Layout>
-        <div className="mx-auto max-w-6xl px-6 py-16 animate-pulse space-y-6">
-          <div className="h-6 bg-muted rounded w-24" />
-          <div className="h-10 bg-muted rounded w-2/3" />
-          <div className="h-4 bg-muted rounded w-1/3" />
-          <div className="h-64 bg-muted rounded" />
-        </div>
+        {/* Hero skeleton */}
+        <div className="w-full h-48 sm:h-64 bg-muted animate-pulse" />
+        <section className="mx-auto max-w-6xl px-6 py-12">
+          <div className="grid lg:grid-cols-3 gap-12 animate-pulse">
+            {/* Article skeleton */}
+            <div className="lg:col-span-2 space-y-5">
+              <div className="h-3 bg-muted rounded w-20" />
+              <div className="h-9 bg-muted rounded w-4/5" />
+              <div className="h-4 bg-muted rounded w-1/3" />
+              <div className="space-y-3 pt-2">
+                <div className="h-4 bg-muted rounded w-full" />
+                <div className="h-4 bg-muted rounded w-full" />
+                <div className="h-4 bg-muted rounded w-5/6" />
+                <div className="h-4 bg-muted rounded w-full" />
+                <div className="h-4 bg-muted rounded w-3/4" />
+                <div className="h-4 bg-muted rounded w-full" />
+                <div className="h-4 bg-muted rounded w-2/3" />
+              </div>
+            </div>
+            {/* Sidebar skeleton */}
+            <div className="lg:col-span-1">
+              <div className="card-elevated rounded-2xl p-6 space-y-4">
+                <div className="h-4 bg-muted rounded w-24" />
+                <div className="h-px bg-muted" />
+                <div className="space-y-3">
+                  <div className="h-3 bg-muted rounded w-14" />
+                  <div className="h-4 bg-muted rounded w-32" />
+                  <div className="h-3 bg-muted rounded w-14 mt-2" />
+                  <div className="h-4 bg-muted rounded w-28" />
+                  <div className="h-3 bg-muted rounded w-14 mt-2" />
+                  <div className="h-6 bg-muted rounded-full w-20" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </Layout>
     );
   }

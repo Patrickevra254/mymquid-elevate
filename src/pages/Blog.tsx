@@ -29,9 +29,10 @@ export default function Blog() {
   });
 
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    blogApi.getPublic().then(setPosts).catch(console.error);
+    blogApi.getPublic().then(setPosts).catch(console.error).finally(() => setLoading(false));
   }, []);
 
   const [featurePost, ...allRest] = posts;
@@ -52,47 +53,79 @@ export default function Blog() {
           </p>
         </motion.div>
 
-        {feature && (
-          <Link to={`/blog/${feature.slug}`} className="group mt-14 block card-elevated rounded-3xl overflow-hidden">
-            <div className="grid md:grid-cols-2">
-              <div className="relative aspect-[16/10] md:aspect-auto bg-gradient-to-br from-primary/30 via-accent/20 to-transparent">
-                <div className="absolute inset-0 grid-pattern opacity-40" />
-                <div className="absolute bottom-6 left-6 inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-xs">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  Featured
-                </div>
-              </div>
-              <div className="p-8 md:p-10 flex flex-col justify-center">
-                <span className="text-xs uppercase tracking-widest text-primary">{feature.tag}</span>
-                <h2 className="mt-3 text-3xl font-medium tracking-tight group-hover:text-primary transition">{feature.title}</h2>
-                <p className="mt-3 text-muted-foreground leading-relaxed">{feature.excerpt}</p>
-                <div className="mt-6 flex items-center gap-4 text-xs text-muted-foreground">
-                  <span>{feature.date}</span>
+        {loading ? (
+          <>
+            {/* Featured card skeleton */}
+            <div className="mt-14 card-elevated rounded-3xl overflow-hidden animate-pulse">
+              <div className="grid md:grid-cols-2">
+                <div className="aspect-[16/10] md:min-h-[240px] bg-muted" />
+                <div className="p-8 md:p-10 space-y-4 flex flex-col justify-center">
+                  <div className="h-3 bg-muted rounded w-16" />
+                  <div className="h-7 bg-muted rounded w-4/5" />
+                  <div className="h-4 bg-muted rounded w-full" />
+                  <div className="h-4 bg-muted rounded w-3/4" />
+                  <div className="h-3 bg-muted rounded w-24 mt-2" />
                 </div>
               </div>
             </div>
-          </Link>
-        )}
-
-        {restPosts.length > 0 && (
-          <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {restPosts.map((p) => {
-              const card = toCard(p);
-              return (
-                <Link key={p.id} to={`/blog/${card.slug}`} className="group card-elevated rounded-3xl p-7 flex flex-col">
-                  <span className="text-xs uppercase tracking-widest text-primary">{card.tag}</span>
-                  <h3 className="mt-4 text-lg font-medium group-hover:text-primary transition">{card.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{card.excerpt}</p>
-                  <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{card.date}</span>
+            {/* Grid card skeletons */}
+            <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="card-elevated rounded-3xl p-7 animate-pulse space-y-3">
+                  <div className="h-3 bg-muted rounded w-16" />
+                  <div className="h-5 bg-muted rounded w-4/5 mt-4" />
+                  <div className="h-4 bg-muted rounded w-full" />
+                  <div className="h-4 bg-muted rounded w-3/5" />
+                  <div className="h-3 bg-muted rounded w-20 mt-3" />
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            {feature && (
+              <Link to={`/blog/${feature.slug}`} className="group mt-14 block card-elevated rounded-3xl overflow-hidden">
+                <div className="grid md:grid-cols-2">
+                  <div className="relative aspect-[16/10] md:aspect-auto bg-gradient-to-br from-primary/30 via-accent/20 to-transparent">
+                    <div className="absolute inset-0 grid-pattern opacity-40" />
+                    <div className="absolute bottom-6 left-6 inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-xs">
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                      Featured
+                    </div>
                   </div>
-                </Link>
-              );
-            })}
-          </div>
+                  <div className="p-8 md:p-10 flex flex-col justify-center">
+                    <span className="text-xs uppercase tracking-widest text-primary">{feature.tag}</span>
+                    <h2 className="mt-3 text-3xl font-medium tracking-tight group-hover:text-primary transition">{feature.title}</h2>
+                    <p className="mt-3 text-muted-foreground leading-relaxed">{feature.excerpt}</p>
+                    <div className="mt-6 flex items-center gap-4 text-xs text-muted-foreground">
+                      <span>{feature.date}</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            )}
+
+            {restPosts.length > 0 && (
+              <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {restPosts.map((p) => {
+                  const card = toCard(p);
+                  return (
+                    <Link key={p.id} to={`/blog/${card.slug}`} className="group card-elevated rounded-3xl p-7 flex flex-col">
+                      <span className="text-xs uppercase tracking-widest text-primary">{card.tag}</span>
+                      <h3 className="mt-4 text-lg font-medium group-hover:text-primary transition">{card.title}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{card.excerpt}</p>
+                      <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{card.date}</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
 
-        {posts.length > 4 && (
+        {!loading && posts.length > 4 && (
           <div className="mt-10 text-center">
             <Link
               to="/blog/all"
