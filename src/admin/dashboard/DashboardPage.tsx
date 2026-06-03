@@ -58,7 +58,15 @@ export default function DashboardPage() {
 
       const posts = postsRes.status === "fulfilled" ? postsRes.value : [];
 
-      if (statsRes.status === "fulfilled") setStats(statsRes.value);
+      if (statsRes.status === "fulfilled") {
+        const s = statsRes.value as Record<string, number>;
+        setStats({
+          totalPosts: s.totalPosts ?? s.total ?? posts.length,
+          published:  s.published  ?? posts.filter(p => p.status === "published").length,
+          drafts:     s.drafts     ?? posts.filter(p => p.status === "draft").length,
+          scheduled:  s.scheduled  ?? posts.filter(p => p.status === "scheduled").length,
+        });
+      }
 
       const apiActivity = activityRes.status === "fulfilled" ? activityRes.value : [];
       const resolvedActivity = (apiActivity.length > 0 ? apiActivity : activityFromPosts(posts)).slice(0, 5);

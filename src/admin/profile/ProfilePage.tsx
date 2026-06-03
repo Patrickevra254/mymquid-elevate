@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PageHeader } from "../shared/components/PageHeader";
 import { useAuthStore } from "../auth/useAuthStore";
+import { profileApi } from "../mock/api";
 
 const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -18,6 +20,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function ProfilePage() {
   const { user } = useAuthStore();
+  const [saving, setSaving] = useState(false);
 
   const initials = user?.name
     ? user.name.trim().split(" ").filter(Boolean).map((n) => n[0]).join("").toUpperCase() || "A"
@@ -26,14 +29,27 @@ export default function ProfilePage() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isDirty },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { name: user?.name ?? "", email: user?.email ?? "" },
   });
 
-  const onSubmit = () => {
-    toast.success("Profile updated. (Mock — no backend yet)");
+  const onSubmit = async (data: FormValues) => {
+    setSaving(true);
+    try {
+      const updated = await profileApi.update({ name: data.name, email: data.email });
+      useAuthStore.setState((state) => ({
+        user: state.user ? { ...state.user, name: updated.name, email: updated.email } : null,
+      }));
+      reset({ name: updated.name, email: updated.email });
+      toast.success("Profile updated successfully.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update profile.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -65,7 +81,9 @@ export default function ProfilePage() {
           <Input id="profile-email" type="email" {...register("email")} />
           {errors.email && <p className="text-destructive text-xs">{errors.email.message}</p>}
         </div>
-        <Button type="submit" disabled={!isDirty}>Save Changes</Button>
+        <Button type="submit" disabled={!isDirty || saving}>
+          {saving ? "Saving…" : "Save Changes"}
+        </Button>
       </form>
     </div>
   );
