@@ -29,7 +29,10 @@ export default function LoginPage() {
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/admin/dashboard", { replace: true });
+    if (isAuthenticated) {
+      toast.success("Welcome back! Login successful.");
+      navigate("/admin/dashboard", { replace: true });
+    }
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
@@ -92,9 +95,6 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Demo: admin@mymquid.com / mock-admin-dev-only
-        </p>
       </div>
     </div>
   );
