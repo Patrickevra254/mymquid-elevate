@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { ArrowLeft, Loader2, Save, Eye, X, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -25,23 +24,17 @@ import { blogApi, uploadApi } from "../mock/api";
 import { useAuthStore } from "../auth/useAuthStore";
 import type { BlogPost, BlogStatus } from "../types";
 
-const schema = z.object({
-  title: z.string().min(1, "Title is required"),
-  slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
-  content: z.string().min(1, "Content is required"),
-  status: z.enum(["draft", "published", "scheduled"]),
-  category: z.string().min(1, "Category is required"),
-  tags: z.array(z.string()),
-  scheduledAt: z.string().optional(),
-  featuredImage: z.string().optional(),
-  seo: z.object({
-    metaTitle: z.string().max(60, "Meta title must be 60 characters or fewer"),
-    metaDescription: z.string().max(160, "Meta description must be 160 characters or fewer"),
-    ogImage: z.string().optional(),
-  }),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  title: string;
+  slug: string;
+  content: string;
+  status: "draft" | "published" | "scheduled";
+  category: string;
+  tags: string[];
+  scheduledAt?: string;
+  featuredImage?: string;
+  seo: { metaTitle: string; metaDescription: string; ogImage?: string };
+};
 
 function slugify(title: string) {
   return title
@@ -72,7 +65,6 @@ export default function BlogEditorPage() {
     setValue,
     formState: { errors, isDirty },
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
     defaultValues: {
       title: "",
       slug: "",
@@ -109,7 +101,10 @@ export default function BlogEditorPage() {
       setValue("tags", post.tags);
       setValue("scheduledAt", post.scheduledAt ?? "");
       setValue("featuredImage", post.featuredImage ?? "");
-      setValue("seo", post.seo);
+      const flat = post as unknown as Record<string, string>;
+      const seo = post.seo ?? { metaTitle: flat.metaTitle ?? "", metaDescription: flat.metaDescription ?? "", ogImage: flat.ogImage ?? "" };
+      setValue("seo.metaTitle", seo.metaTitle);
+      setValue("seo.metaDescription", seo.metaDescription);
       originalCreatedAt.current = post.createdAt;
       setLoading(false);
     }).catch(() => {
@@ -145,13 +140,25 @@ export default function BlogEditorPage() {
     setSaving(true);
     try {
       const post = buildPost({ ...data, status: overrideStatus ?? data.status });
+      const isNew = !id;
       await savePost(post);
+      toast.success(
+        overrideStatus === "published"
+          ? "Post published successfully!"
+          : isNew
+          ? "Post created successfully!"
+          : "Post updated successfully!"
+      );
       navigate("/admin/blog");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to save post.");
     } finally {
       setSaving(false);
     }
+  };
+
+  const onValidationError = () => {
+    toast.error("Please fill in all required fields.");
   };
 
   if (loading) return <SkeletonLoader rows={8} />;
@@ -179,12 +186,7 @@ export default function BlogEditorPage() {
             variant="outline"
             size="sm"
             disabled={saving}
-            onClick={handleSubmit(
-              (data) => handleSave(data, "draft"),
-              () => {
-                toast.error("Please fix the form errors before saving.");
-              }
-            )}
+            onClick={handleSubmit((data) => handleSave(data, "draft"), onValidationError)}
           >
             {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Save className="mr-1.5 h-4 w-4" />}
             Save Draft
@@ -192,12 +194,7 @@ export default function BlogEditorPage() {
           <Button
             size="sm"
             disabled={saving}
-            onClick={handleSubmit(
-              (data) => handleSave(data, "published"),
-              () => {
-                toast.error("Please fix the form errors before publishing.");
-              }
-            )}
+            onClick={handleSubmit((data) => handleSave(data, "published"), onValidationError)}
           >
             {saving && <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />}
             Publish
@@ -206,12 +203,6 @@ export default function BlogEditorPage() {
       </div>
 
       <h1 className="text-xl font-bold">{isEdit ? "Edit Post" : "New Post"}</h1>
-
-      {Object.keys(errors).length > 0 && (
-        <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          <p className="font-semibold">Some fields need attention — please review the fields highlighted in red below.</p>
-        </div>
-      )}
 
       <form
         onSubmit={(e) => e.preventDefault()}
@@ -224,10 +215,10 @@ export default function BlogEditorPage() {
             <Input
               id="post-title"
               placeholder="Post title..."
-              {...register("title")}
+              {...register("title", { required: "Title is required" })}
               className={cn(errors.title && "border-destructive focus-visible:ring-destructive")}
             />
-            {errors.title && <p className="text-destructive text-xs">{errors.title.message}</p>}
+            {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
           </div>
 
           <div className="space-y-1">
@@ -236,13 +227,13 @@ export default function BlogEditorPage() {
               id="post-slug"
               placeholder="post-url-slug"
               {...register("slug", {
-                onChange: () => {
-                  setSlugManuallyEdited(true);
-                },
+                required: "Slug is required",
+                pattern: { value: /^[a-z0-9-]+$/, message: "Slug must be lowercase letters, numbers and hyphens only" },
+                onChange: () => setSlugManuallyEdited(true),
               })}
               className={cn(errors.slug && "border-destructive focus-visible:ring-destructive")}
             />
-            {errors.slug && <p className="text-destructive text-xs">{errors.slug.message}</p>}
+            {errors.slug && <p className="text-xs text-destructive">{errors.slug.message}</p>}
             <p className="text-xs text-muted-foreground">
               URL: /blog/<strong>{watch("slug") || "your-post-slug"}</strong>
             </p>
@@ -253,20 +244,75 @@ export default function BlogEditorPage() {
             <Controller
               name="content"
               control={control}
+              rules={{
+                validate: (v) => {
+                  if (!v || v.trim() === "") return "Content is required";
+                  try {
+                    const doc = JSON.parse(v);
+                    const hasText = (nodes: unknown[]): boolean =>
+                      nodes?.some((n: unknown) => {
+                        const node = n as Record<string, unknown>;
+                        if (typeof node.text === "string" && node.text.trim().length > 0) return true;
+                        if (Array.isArray(node.content)) return hasText(node.content);
+                        return false;
+                      });
+                    return hasText(doc?.content ?? []) || "Content is required";
+                  } catch {
+                    return v.trim().length > 0 || "Content is required";
+                  }
+                },
+              }}
               render={({ field }) => (
                 <TiptapEditor value={field.value} onChange={field.onChange} />
               )}
             />
-            {errors.content && <p className="text-destructive text-xs">{errors.content.message}</p>}
+            {errors.content && <p className="text-xs text-destructive">{errors.content.message}</p>}
           </div>
 
-          <Controller
-            name="seo"
-            control={control}
-            render={({ field }) => (
-              <SEOFields value={field.value} onChange={field.onChange} errors={errors.seo} />
-            )}
-          />
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold">SEO</h4>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Meta Title</Label>
+              <Input
+                placeholder="Page title for search engines"
+                {...register("seo.metaTitle", {
+                  required: "Meta title is required",
+                  maxLength: { value: 60, message: "Meta title must be 60 characters or fewer" },
+                })}
+                className={cn(errors.seo?.metaTitle && "border-destructive focus-visible:ring-destructive")}
+              />
+              <div className="flex justify-between items-center">
+                {errors.seo?.metaTitle
+                  ? <p className="text-xs text-destructive">{errors.seo.metaTitle.message}</p>
+                  : <span />}
+                <p className={cn("text-xs", (watch("seo.metaTitle")?.length ?? 0) > 60 ? "text-destructive" : "text-muted-foreground")}>
+                  {watch("seo.metaTitle")?.length ?? 0}/60
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Meta Description</Label>
+              <Textarea
+                placeholder="Short description for search results"
+                rows={3}
+                {...register("seo.metaDescription", {
+                  required: "Meta description is required",
+                  maxLength: { value: 160, message: "Meta description must be 160 characters or fewer" },
+                })}
+                className={cn(errors.seo?.metaDescription && "border-destructive focus-visible:ring-destructive")}
+              />
+              <div className="flex justify-between items-center">
+                {errors.seo?.metaDescription
+                  ? <p className="text-xs text-destructive">{errors.seo.metaDescription.message}</p>
+                  : <span />}
+                <p className={cn("text-xs", (watch("seo.metaDescription")?.length ?? 0) > 160 ? "text-destructive" : "text-muted-foreground")}>
+                  {watch("seo.metaDescription")?.length ?? 0}/160
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Right: settings sidebar */}
@@ -304,6 +350,7 @@ export default function BlogEditorPage() {
             <Controller
               name="category"
               control={control}
+              rules={{ required: "Category is required" }}
               render={({ field: catField }) => (
                 <Controller
                   name="tags"
@@ -319,9 +366,7 @@ export default function BlogEditorPage() {
                 />
               )}
             />
-            {errors.category && (
-              <p className="text-destructive text-xs mt-1">{errors.category.message}</p>
-            )}
+            {errors.category && <p className="text-xs text-destructive mt-1">{errors.category.message}</p>}
           </div>
 
           <div className="rounded-lg border p-4 space-y-3">
