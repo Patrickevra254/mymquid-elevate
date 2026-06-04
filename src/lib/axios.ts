@@ -13,12 +13,17 @@ api.interceptors.request.use((config) => {
   } catch {
     // ignore parse errors
   }
+  console.log(`[API →] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`, config.data ?? config.params ?? "");
   return config;
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    console.log(`[API ←] ${res.status} ${res.config.method?.toUpperCase()} ${res.config.url}`, res.data);
+    return res;
+  },
   (err) => {
+    console.error(`[API ✗] ${err.response?.status} ${err.config?.method?.toUpperCase()} ${err.config?.url}`, err.response?.data);
     if (err.response?.status === 401) {
       localStorage.removeItem("mymquid-admin-auth");
       window.location.href = "/admin/login";

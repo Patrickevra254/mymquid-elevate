@@ -48,7 +48,6 @@ export const useBlogStore = create<BlogState>((set, get) => ({
 
   savePost: async (post) => {
     await blogApi.save(post);
-    toast.success(post.status === "published" ? "Post published!" : "Post saved.");
     useNotificationStore.getState().fetchNotifications().catch(() => {});
   },
 
