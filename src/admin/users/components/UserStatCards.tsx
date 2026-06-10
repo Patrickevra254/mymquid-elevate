@@ -25,7 +25,7 @@ export function UserStatCards({ user }: Props) {
       />
       <StatCard
         label="Last Login"
-        value={format(new Date(user.lastLogin), "MMM d, yyyy")}
+        value={user.lastLogin ? format(new Date(user.lastLogin), "MMM d, yyyy") : "Never"}
         icon={LogIn}
       />
     </div>

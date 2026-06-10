@@ -104,34 +104,35 @@ export default function BlogPost() {
 
   return (
     <Layout>
-      {/* Hero — featured image or gradient placeholder */}
-      {post.featuredImage ? (
-        <div className="w-full h-64 sm:h-80 overflow-hidden">
-          <img
-            src={post.featuredImage}
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
+      {/* Header with title overlaid on gradient */}
+      <div className="w-full min-h-48 sm:min-h-64 relative bg-gradient-to-br from-primary/30 via-accent/20 to-transparent flex items-end">
+        <div className="absolute inset-0 grid-pattern opacity-40" />
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-10 pt-16">
+          <span className="inline-block text-xs uppercase tracking-widest font-medium glass px-3 py-1 rounded-full">
+            {post.category}
+          </span>
+          <h1 className="mt-2 text-4xl sm:text-5xl font-medium tracking-tighter leading-tight text-black">
+            {post.title}
+          </h1>
+          <p className="mt-3 text-sm text-black/60">
+            {authorName} · {format(new Date(post.createdAt), "MMM d, yyyy")}
+          </p>
         </div>
-      ) : (
-        <div className="w-full h-48 sm:h-64 relative bg-gradient-to-br from-primary/30 via-accent/20 to-transparent">
-          <div className="absolute inset-0 grid-pattern opacity-40" />
-        </div>
-      )}
+      </div>
 
       <section className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Left: article body */}
           <article className="lg:col-span-2 space-y-6">
-            <span className="text-xs uppercase tracking-widest text-primary">
-              {post.category}
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-medium tracking-tighter leading-tight">
-              {post.title}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {authorName} · {format(new Date(post.createdAt), "MMM d, yyyy")}
-            </p>
+            {post.featuredImage && (
+              <div className="rounded-2xl overflow-hidden max-w-2xl max-h-92">
+                <img
+                  src={post.featuredImage}
+                  alt={post.title}
+                  className="w-full h-full object-cover block"
+                />
+              </div>
+            )}
             {metaDescription && (
               <p className="text-lg text-muted-foreground leading-relaxed">
                 {metaDescription}

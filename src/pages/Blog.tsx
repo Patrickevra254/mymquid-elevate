@@ -86,8 +86,18 @@ export default function Blog() {
             {feature && (
               <Link to={`/blog/${feature.slug}`} className="group mt-14 block card-elevated rounded-3xl overflow-hidden">
                 <div className="grid md:grid-cols-2">
-                  <div className="relative aspect-[16/10] md:aspect-auto bg-gradient-to-br from-primary/30 via-accent/20 to-transparent">
-                    <div className="absolute inset-0 grid-pattern opacity-40" />
+                  <div className="relative aspect-[16/10] md:aspect-auto overflow-hidden">
+                    {featurePost?.featuredImage ? (
+                      <img
+                        src={featurePost.featuredImage}
+                        alt={featurePost.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-accent/20 to-transparent">
+                        <div className="absolute inset-0 grid-pattern opacity-40" />
+                      </div>
+                    )}
                     <div className="absolute bottom-6 left-6 inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-xs">
                       <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                       Featured

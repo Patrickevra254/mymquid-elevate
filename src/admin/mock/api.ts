@@ -13,6 +13,11 @@ export const authApi = {
   logout: async () => {
     // No server logout endpoint — client-side clear only
   },
+
+  setPassword: async (token: string, password: string, confirmPassword: string) => {
+    const { data } = await api.post("/auth/set-password", { token, password, confirmPassword });
+    return { user: data.user, token: data.access_token };
+  },
 };
 
 // ─── Blog ─────────────────────────────────────────────────────────────────────
@@ -155,9 +160,7 @@ export const uploadApi = {
     const form = new FormData();
     form.append("file", file);
     form.append("type", type);
-    const { data } = await api.post("/upload", form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const { data } = await api.post("/upload", form);
     return data.url as string;
   },
 };
@@ -195,6 +198,10 @@ export const userApi = {
 
   resetPassword: async (id: string): Promise<void> => {
     await api.post(`/users/${id}/reset-password`);
+  },
+
+  resendInvite: async (id: string): Promise<void> => {
+    await api.post(`/users/${id}/resend-invite`);
   },
 
   getPosts: async (id: string): Promise<BlogPost[]> => {

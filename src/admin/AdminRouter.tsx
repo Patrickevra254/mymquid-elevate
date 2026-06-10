@@ -6,6 +6,7 @@ import { RoleGuard } from "./auth/roleGuard";
 const LoginPage = lazy(() => import("./auth/LoginPage"));
 const ForgotPasswordPage = lazy(() => import("./auth/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("./auth/ResetPasswordPage"));
+const SetPasswordPage = lazy(() => import("./auth/SetPasswordPage"));
 const AdminLayout = lazy(() => import("./layout/AdminLayout"));
 const DashboardPage = lazy(() => import("./dashboard/DashboardPage"));
 const BlogListPage = lazy(() => import("./blog/BlogListPage"));
@@ -31,6 +32,7 @@ export default function AdminRouter() {
         <Route path="login" element={<LoginPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />
+        <Route path="set-password" element={<SetPasswordPage />} />
 
         <Route element={<AuthGuard />}>
           <Route element={<AdminLayout />}>

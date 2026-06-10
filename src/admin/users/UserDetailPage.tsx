@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Edit, Mail, ShieldOff, Shield, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit, Mail, ShieldOff, Shield, Trash2, Send } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +29,7 @@ export default function UserDetailPage() {
     toggleUserStatus,
     deleteUser,
     resetUserPassword,
+    resendUserInvite,
   } = useUserStore();
 
   const [showEditModal, setShowEditModal] = useState(false);
@@ -151,6 +152,16 @@ export default function UserDetailPage() {
           >
             <Mail className="mr-2 h-4 w-4" /> Reset Password
           </Button>
+          {(!user.lastLogin || new Date(user.lastLogin).getFullYear() <= 1970) && (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isActionLoading}
+              onClick={() => resendUserInvite(user.id)}
+            >
+              <Send className="mr-2 h-4 w-4" /> Resend Invite
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -211,7 +222,7 @@ export default function UserDetailPage() {
             <div className="space-y-1">
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Last Login</p>
               <p className="font-medium">
-                {format(new Date(user.lastLogin), "MMMM d, yyyy 'at' h:mm a")}
+                {user.lastLogin ? format(new Date(user.lastLogin), "MMMM d, yyyy 'at' h:mm a") : "Never"}
               </p>
             </div>
           </div>

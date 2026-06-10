@@ -17,6 +17,7 @@ type UserState = {
   toggleUserStatus: (id: string, active: boolean) => Promise<void>;
   deleteUser: (id: string) => Promise<void>;
   resetUserPassword: (id: string) => Promise<void>;
+  resendUserInvite: (id: string) => Promise<void>;
 };
 
 export const useUserStore = create<UserState>((set) => ({
@@ -137,6 +138,23 @@ export const useUserStore = create<UserState>((set) => ({
     } catch {
       set({ isActionLoading: false });
       toast.error("Failed to send password reset email.");
+    }
+  },
+
+  resendUserInvite: async (id) => {
+    set({ isActionLoading: true });
+    try {
+      await userApi.resendInvite(id);
+      set({ isActionLoading: false });
+      toast.success("Invite email resent successfully.");
+    } catch (err) {
+      set({ isActionLoading: false });
+      const e = err as { response?: { status?: number; data?: unknown }; message?: string };
+      console.log("[RESEND INVITE] Request payload: POST /users/" + id + "/resend-invite (no body)");
+      console.log("[RESEND INVITE] Status:", e?.response?.status);
+      console.log("[RESEND INVITE] Error response:", JSON.stringify(e?.response?.data, null, 2));
+      console.log("[RESEND INVITE] Message:", e?.message);
+      toast.error("Failed to resend invite email.");
     }
   },
 }));
