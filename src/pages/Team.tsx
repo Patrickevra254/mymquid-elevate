@@ -33,7 +33,7 @@ const developers: Member[] = [
 const itSupport: Member[] = [
   { name: "Michael Obiosio", role: "Application Support", gender: "male" },
   { name: "Segun Kadri", role: "Application Support / Hardware Engineer", gender: "male" },
-  { name: "Evelyn Agolor", role: "Financial Accountant", gender: "female" },
+  { name: "Evelyn Agholor", role: "Financial Accountant", gender: "female" },
 ];
 
 function MemberCard({ p }: { p: Member }) {
