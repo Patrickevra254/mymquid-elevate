@@ -111,10 +111,10 @@ export default function BlogPost() {
           <span className="inline-block text-xs uppercase tracking-widest font-medium glass px-3 py-1 rounded-full">
             {post.category}
           </span>
-          <h1 className="mt-2 text-4xl sm:text-5xl font-medium tracking-tighter leading-tight text-black">
+          <h1 className="mt-2 text-4xl sm:text-5xl font-medium tracking-tighter leading-tight text-light">
             {post.title}
           </h1>
-          <p className="mt-3 text-sm text-black/60">
+          <p className="mt-3 text-sm text-light/70">
             {authorName} · {format(new Date(post.createdAt), "MMM d, yyyy")}
           </p>
         </div>
