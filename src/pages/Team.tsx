@@ -27,7 +27,7 @@ const developers: Member[] = [
   { name: "Bassey Eno", role: "Software Developer", gender: "male" },
   { name: "Adesanya Oluwagbenga", role: "Software Developer", gender: "male" },
   { name: "Patrick Chukwudi", role: "Software Developer", gender: "male" },
-  { name: "Precious", role: "Software Developer", gender: "female" },
+  { name: "Nnam Precious", role: "Software Developer", gender: "female" },
 ];
 
 const itSupport: Member[] = [

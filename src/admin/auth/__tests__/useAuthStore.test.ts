@@ -9,7 +9,7 @@ vi.mock("../../mock/api", () => ({
 }));
 
 import { authApi } from "../../mock/api";
-const mockAuthApi = authApi as { login: ReturnType<typeof vi.fn>; logout: ReturnType<typeof vi.fn> };
+const mockAuthApi = authApi as unknown as { login: ReturnType<typeof vi.fn>; logout: ReturnType<typeof vi.fn> };
 
 const MOCK_ADMIN = { id: "1", name: "Patrick Evra", email: "admin@mymquid.com", role: "super_admin" as const };
 const MOCK_STAFF = { id: "2", name: "Jane Staff", email: "staff@mymquid.com", role: "staff" as const };
