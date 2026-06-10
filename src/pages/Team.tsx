@@ -4,19 +4,69 @@ import { ArrowUpRight, Linkedin } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 
-const team = [
-  { name: "Adaeze Okafor", role: "Chief Executive Officer", bio: "15 years scaling fintech and logistics infrastructure across West Africa." },
-  { name: "Tunde Bakare", role: "Chief Technology Officer", bio: "Ex-AWS principal engineer. Architected payment rails for Tier-1 banks." },
-  { name: "Sofia Mensah", role: "Head of Cyber Security", bio: "Former CISO. Leads our zero-trust and SOC practice." },
-  { name: "Ifeanyi Chukwu", role: "Head of Cloud Engineering", bio: "Multi-cloud architect specialising in cost-optimised Kubernetes platforms." },
-  { name: "Maya Adebola", role: "Head of Managed Services", bio: "Built our 24/7 NOC from the ground up. ITIL v4 expert." },
-  { name: "Kwame Osei", role: "Head of Product Engineering", bio: "Ships React, Node and React Native at scale for enterprise clients." },
+type Member = { name: string; role: string; bio?: string; gender?: "male" | "female" };
+
+const avatarUrl = (name: string, gender?: "male" | "female") => {
+  const style = gender === "female" ? "avataaars" : "avataaars";
+  const seed = encodeURIComponent(name);
+  return `https://api.dicebear.com/9.x/${style}/svg?seed=${seed}`;
+};
+
+const leadership: Member[] = [
+  { name: "Chijoke Okafor", role: "CEO", bio: "MD/CEO overseeing business operations and premier services including Cyber Security, Network Operations, Global Service Desks, Professional Services and Field Engineering. 20+ years in mid-market service delivery for MSPs and VARs.", gender: "male" },
+  { name: "Dalton Chukwumam", role: "CTO", bio: "Accomplished IT leader with three decades of experience building industry-leading technology companies. Drives MQUID's strategic vision as the partner of choice for mid-market strategic buyers of IT.", gender: "male" },
+  { name: "Precious Nnam", role: "Marketing Director", bio: "Customer-focused, insights-driven leader covering branding, communications, demand generation, customer engagement and partner marketing.", gender: "female" },
+  { name: "Victoria Enema", role: "Project Manager", bio: "Coordinates delivery across engineering, support and client teams to keep projects on time and on budget.", gender: "female" },
 ];
+
+const developers: Member[] = [
+  { name: "Henry Onuorah", role: "Senior Software Developer", gender: "male" },
+  { name: "Uchendu Samuel", role: "Software Developer", gender: "male" },
+  { name: "Happy Asiriuwa", role: "Software Developer", gender: "male" },
+  { name: "Oluwatobi Adesina", role: "Software Developer", gender: "male" },
+  { name: "Bassey Eno", role: "Software Developer", gender: "male" },
+  { name: "Adesanya Oluwagbenga", role: "Software Developer", gender: "male" },
+  { name: "Patrick Chukwudi", role: "Software Developer", gender: "male" },
+  { name: "Precious", role: "Software Developer", gender: "female" },
+];
+
+const itSupport: Member[] = [
+  { name: "Michael Obiosio", role: "Application Support", gender: "male" },
+  { name: "Segun Kadri", role: "Application Support / Hardware Engineer", gender: "male" },
+  { name: "Evelyn Agolor", role: "Financial Accountant", gender: "female" },
+];
+
+function MemberCard({ p }: { p: Member }) {
+  return (
+    <div className="card-elevated rounded-3xl p-7">
+      <div className="h-16 w-16 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 grid place-items-center">
+        <img src={avatarUrl(p.name, p.gender)} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
+      </div>
+      <h3 className="mt-5 text-lg font-medium">{p.name}</h3>
+      <p className="text-sm text-primary">{p.role}</p>
+      {p.bio && <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{p.bio}</p>}
+      <a href="#" className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition">
+        <Linkedin className="h-3.5 w-3.5" /> LinkedIn
+      </a>
+    </div>
+  );
+}
+
+function Section({ title, members }: { title: string; members: Member[] }) {
+  return (
+    <div className="mt-14">
+      <h2 className="text-2xl font-medium tracking-tight mb-6">{title}</h2>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {members.map((p) => <MemberCard key={p.name} p={p} />)}
+      </div>
+    </div>
+  );
+}
 
 export default function Team() {
   useDocumentMeta({
     title: "Team — Mquid",
-    description: "Meet the operators, engineers and security leaders behind Mquid.",
+    description: "Meet the leadership, developers and support team behind Mquid.",
   });
 
   return (
@@ -29,25 +79,13 @@ export default function Team() {
             <span className="font-display italic text-primary">behind the platform.</span>
           </h1>
           <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-            Operators, engineers and security leaders with deep tenure at the companies our clients aspire to be.
+            Operators, engineers and support leaders delivering Cyber Security, Network Operations and Professional Services for our clients.
           </p>
         </motion.div>
 
-        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {team.map((p) => (
-            <div key={p.name} className="card-elevated rounded-3xl p-7">
-              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-accent grid place-items-center font-display text-2xl text-primary-foreground">
-                {p.name.split(" ").map(n => n[0]).join("")}
-              </div>
-              <h3 className="mt-5 text-lg font-medium">{p.name}</h3>
-              <p className="text-sm text-primary">{p.role}</p>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{p.bio}</p>
-              <a href="#" className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition">
-                <Linkedin className="h-3.5 w-3.5" /> LinkedIn
-              </a>
-            </div>
-          ))}
-        </div>
+        <Section title="Leadership" members={leadership} />
+        <Section title="Developers" members={developers} />
+        <Section title="IT Support & Operations" members={itSupport} />
 
         <div className="mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 card-elevated rounded-3xl p-10">
           <div>
