@@ -6,11 +6,8 @@ import { useDocumentMeta } from "@/hooks/use-document-meta";
 
 type Member = { name: string; role: string; bio?: string; gender?: "male" | "female" };
 
-const avatarUrl = (name: string, gender?: "male" | "female") => {
-  const style = gender === "female" ? "avataaars" : "avataaars";
-  const seed = encodeURIComponent(name);
-  return `https://api.dicebear.com/9.x/${style}/svg?seed=${seed}`;
-};
+const getInitials = (name: string) =>
+  name.split(" ").slice(0, 2).map(n => n[0].toUpperCase()).join("");
 
 const leadership: Member[] = [
   { name: "Chijoke Okafor", role: "CEO", bio: "MD/CEO overseeing business operations and premier services including Cyber Security, Network Operations, Global Service Desks, Professional Services and Field Engineering. 20+ years in mid-market service delivery for MSPs and VARs.", gender: "male" },
@@ -39,8 +36,8 @@ const itSupport: Member[] = [
 function MemberCard({ p }: { p: Member }) {
   return (
     <div className="card-elevated rounded-3xl p-7">
-      <div className="h-16 w-16 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 grid place-items-center">
-        <img src={avatarUrl(p.name, p.gender)} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
+      <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-accent grid place-items-center font-display text-2xl text-primary-foreground">
+        {getInitials(p.name)}
       </div>
       <h3 className="mt-5 text-lg font-medium">{p.name}</h3>
       <p className="text-sm text-primary">{p.role}</p>
