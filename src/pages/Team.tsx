@@ -18,19 +18,22 @@ const leadership: Member[] = [
 
 const developers: Member[] = [
   { name: "Henry Onuorah", role: "Senior Software Developer", gender: "male" },
+  { name: "Nnam Precious", role: "Software Developer", gender: "female" },
   { name: "Uchendu Samuel", role: "Software Developer", gender: "male" },
   { name: "Oluwatobi Adesina", role: "Software Developer", gender: "male" },
   { name: "Bassey Eno", role: "Software Developer", gender: "male" },
   { name: "Adesanya Oluwagbenga", role: "Software Developer", gender: "male" },
   { name: "Patrick Chukwudi", role: "Software Developer", gender: "male" },
-  { name: "Nnam Precious", role: "Software Developer", gender: "female" },
+  
 ];
 
 const itSupport: Member[] = [
+   { name: "Evelyn Agholor", role: "Financial Accountant", gender: "female" },
   { name: "Happy Asiriuwa", role: "IT Support", gender: "male" },
   { name: "Michael Obiosio", role: "Application Support", gender: "male" },
   { name: "Segun Kadri", role: "Application Support / Hardware Engineer", gender: "male" },
-  { name: "Evelyn Agholor", role: "Financial Accountant", gender: "female" },
+  { name: "Okoi Eno", role: "Application Support", gender: "male" },
+ 
 ];
 
 function MemberCard({ p }: { p: Member }) {
