@@ -24,11 +24,34 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 
+const ease = [0.22, 1, 0.36, 1] as const;
+
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-80px" },
-  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  transition: { duration: 0.6, ease },
+};
+
+const fadeIn = {
+  initial: { opacity: 0 },
+  whileInView: { opacity: 1 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.7, ease },
+};
+
+const slideLeft = {
+  initial: { opacity: 0, x: -28 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.65, ease },
+};
+
+const slideRight = {
+  initial: { opacity: 0, x: 28 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.65, ease },
 };
 
 export function Home() {
@@ -215,9 +238,9 @@ function LogoMarquee() {
   const doubled = [...clientLogos, ...clientLogos];
   return (
     <section className="py-12 border-y border-border bg-surface/30">
-      <p className="text-center text-xs uppercase tracking-[0.2em] text-muted-foreground mb-8">
+      <motion.p {...fadeIn} className="text-center text-xs uppercase tracking-[0.2em] text-muted-foreground mb-8">
         Trusted by category-defining teams
-      </p>
+      </motion.p>
       <div
         className="overflow-hidden"
         style={{
@@ -250,9 +273,10 @@ function Stats() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-24">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border rounded-3xl overflow-hidden card-elevated">
-        {stats.map((s) => (
+        {stats.map((s, i) => (
           <motion.div
             {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: i * 0.1 }}
             key={s.l}
             className="bg-card p-8 sm:p-10 text-center"
           >
@@ -346,7 +370,7 @@ function Platform() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-24">
       <div className="grid lg:grid-cols-2 gap-10 items-center">
-        <motion.div {...fadeUp}>
+        <motion.div {...slideLeft}>
           <span className="text-xs uppercase tracking-widest text-primary">The Platform</span>
           <h2 className="mt-3 text-4xl sm:text-5xl font-medium tracking-tight">
             One control plane.
@@ -359,16 +383,23 @@ function Platform() {
             without breaking compliance.
           </p>
           <ul className="mt-8 grid sm:grid-cols-2 gap-3">
-            {features.map((f) => (
-              <li key={f} className="flex items-center gap-2.5 text-sm">
+            {features.map((f, i) => (
+              <motion.li
+                key={f}
+                initial={{ opacity: 0, x: -16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.4, ease, delay: 0.2 + i * 0.07 }}
+                className="flex items-center gap-2.5 text-sm"
+              >
                 <CheckCircle2 className="h-4 w-4 text-primary flex-none" />
                 <span className="text-foreground/90">{f}</span>
-              </li>
+              </motion.li>
             ))}
           </ul>
         </motion.div>
 
-        <motion.div {...fadeUp} className="relative">
+        <motion.div {...slideRight} className="relative">
           <div className="absolute -inset-8 bg-primary/10 blur-3xl rounded-full" />
           <div className="relative card-elevated rounded-3xl p-6 animate-float">
             <div className="flex items-center justify-between mb-4">
@@ -522,13 +553,20 @@ function FAQ() {
       </motion.div>
       <div className="mt-12 divide-y divide-border card-elevated rounded-2xl px-2">
         {FAQS.map((f, i) => (
-          <details key={i} className="group p-5">
+          <motion.details
+            key={i}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.45, ease, delay: i * 0.08 }}
+            className="group p-5"
+          >
             <summary className="flex items-center justify-between cursor-pointer list-none">
               <span className="font-medium text-foreground">{f.q}</span>
               <span className="h-7 w-7 rounded-full glass grid place-items-center group-open:rotate-45 transition">+</span>
             </summary>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
-          </details>
+          </motion.details>
         ))}
       </div>
     </section>
@@ -542,18 +580,30 @@ function CTA() {
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         <div className="relative">
-          <h2 className="text-4xl sm:text-6xl font-medium tracking-tight">
-            Run your business <span className="font-display italic text-primary">on autopilot.</span>
-          </h2>
-          <p className="mt-5 text-muted-foreground max-w-xl mx-auto">
-            Talk to our team. Get a tailored architecture proposal within 48 hours.
-          </p>
-          <Link
-            to="/contact"
-            className="mt-8 inline-flex items-center gap-2 bg-primary text-primary-foreground font-medium px-7 py-3.5 rounded-full hover:opacity-90 transition glow"
+          <motion.h2
+            {...fadeUp}
+            className="text-4xl sm:text-6xl font-medium tracking-tight"
           >
-            Schedule a free consultation <ArrowUpRight className="h-4 w-4" />
-          </Link>
+            Run your business <span className="font-display italic text-primary">on autopilot.</span>
+          </motion.h2>
+          <motion.p
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.1 }}
+            className="mt-5 text-muted-foreground max-w-xl mx-auto"
+          >
+            Talk to our team. Get a tailored architecture proposal within 48 hours.
+          </motion.p>
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.2 }}
+          >
+            <Link
+              to="/contact"
+              className="mt-8 inline-flex items-center gap-2 bg-primary text-primary-foreground font-medium px-7 py-3.5 rounded-full hover:opacity-90 transition glow"
+            >
+              Schedule a free consultation <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
         </div>
       </div>
     </section>
