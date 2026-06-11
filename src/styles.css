@@ -226,11 +226,12 @@
       0 0 40px -8px color-mix(in oklab, var(--primary) 45%, transparent);
   }
   .animate-marquee {
-    animation: marquee 40s linear infinite;
+    animation: marquee 50s linear infinite;
+    will-change: transform;
   }
   @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
   @keyframes float {
     0%, 100% { transform: translateY(0); }

@@ -196,22 +196,43 @@ function Sparkline() {
   );
 }
 
+const clientLogos = [
+  { src: "/logos/staysafe-facilities.png", alt: "StaySafe Facilities Limited" },
+  { src: "/logos/staysafe-security.png", alt: "StaySafe Security Limited" },
+  { src: "/logos/sunlay-insurance.png", alt: "Sunlay Insurance Brokers Limited" },
+  { src: "/logos/amadeus-university.png", alt: "Amadeus University" },
+  { src: "/logos/creditstar.png", alt: "CreditStar Microinsurance Company Limited" },
+  { src: "/logos/crem.png", alt: "CREM" },
+  { src: "/logos/eg-productions.png", alt: "EG Productions" },
+  { src: "/logos/gc-fitness.png", alt: "GC Fitness" },
+  { src: "/logos/grooming-centre.png", alt: "Grooming Centre" },
+  { src: "/logos/grooming-endowment-trust.png", alt: "Grooming Endowment Trust" },
+  { src: "/logos/grooming-health.png", alt: "Grooming Health Management Limited" },
+  { src: "/logos/grooming-microfinance.png", alt: "Grooming Microfinance Bank Limited" },
+];
+
 function LogoMarquee() {
-  const logos = ["GROOMING", "GHMO", "CREDITSTAR", "GMFB", "ECOSENSE", "SUNLAY", "STAYSAFE", "GC FITNESS"];
+  const doubled = [...clientLogos, ...clientLogos];
   return (
     <section className="py-12 border-y border-border bg-surface/30">
       <p className="text-center text-xs uppercase tracking-[0.2em] text-muted-foreground mb-8">
         Trusted by category-defining teams
       </p>
-      <div className="overflow-hidden" style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)", WebkitMaskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}>
-        <div className="flex gap-16 animate-marquee whitespace-nowrap">
-          {[...logos, ...logos].map((l, i) => (
-            <span
+      <div
+        className="overflow-hidden"
+        style={{
+          maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)",
+          WebkitMaskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)",
+        }}
+      >
+        <div className="flex items-center gap-20 animate-marquee whitespace-nowrap">
+          {doubled.map((logo, i) => (
+            <img
               key={i}
-              className="text-xl font-semibold tracking-widest text-muted-foreground/70 hover:text-foreground transition"
-            >
-              {l}
-            </span>
+              src={logo.src}
+              alt={logo.alt}
+              className="h-30 w-auto max-w-[160px] object-contain opacity-70 hover:opacity-100 transition grayscale hover:grayscale-0 shrink-0"
+            />
           ))}
         </div>
       </div>
