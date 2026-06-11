@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { userApi } from "../mock/api";
 import type { UserWithStats, CreateUserPayload, UpdateUserPayload, BlogPost } from "../types";
 import { toast } from "sonner";
+import type { UserWithSetupKey } from "../types";
 
 type UserState = {
   users: UserWithStats[];
@@ -12,12 +13,13 @@ type UserState = {
   fetchUsers: () => Promise<void>;
   fetchUser: (id: string) => Promise<void>;
   fetchUserPosts: (id: string) => Promise<void>;
-  createUser: (data: CreateUserPayload) => Promise<void>;
+  createUser: (data: CreateUserPayload) => Promise<UserWithSetupKey>;
   updateUser: (id: string, data: UpdateUserPayload) => Promise<void>;
   toggleUserStatus: (id: string, active: boolean) => Promise<void>;
   deleteUser: (id: string) => Promise<void>;
   resetUserPassword: (id: string) => Promise<void>;
   resendUserInvite: (id: string) => Promise<void>;
+  regenerateSetupKey: (id: string) => Promise<string | null>;
 };
 
 export const useUserStore = create<UserState>((set) => ({
@@ -61,10 +63,10 @@ export const useUserStore = create<UserState>((set) => ({
   createUser: async (data) => {
     set({ isActionLoading: true });
     try {
-      await userApi.create(data);
+      const created = await userApi.create(data);
       const users = await userApi.getAll();
       set({ users, isActionLoading: false });
-      toast.success(`User created. An invite email has been sent to ${data.email}.`);
+      return created;
     } catch (err: unknown) {
       set({ isActionLoading: false });
       const msg =
@@ -155,6 +157,25 @@ export const useUserStore = create<UserState>((set) => ({
       console.log("[RESEND INVITE] Error response:", JSON.stringify(e?.response?.data, null, 2));
       console.log("[RESEND INVITE] Message:", e?.message);
       toast.error("Failed to resend invite email.");
+    }
+  },
+
+  regenerateSetupKey: async (id) => {
+    set({ isActionLoading: true });
+    try {
+      const { setupKey } = await userApi.regenerateSetupKey(id);
+      set({ isActionLoading: false });
+      return setupKey;
+    } catch (err) {
+      set({ isActionLoading: false });
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "";
+      if (msg.toLowerCase().includes("already set")) {
+        toast.error("Cannot regenerate — this user has already set their password.");
+      } else {
+        toast.error("Failed to regenerate setup key.");
+      }
+      return null;
     }
   },
 }));

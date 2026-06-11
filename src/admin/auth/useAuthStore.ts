@@ -8,10 +8,12 @@ type AuthState = {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  setupRequired: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   clearError: () => void;
+  clearSetupRequired: () => void;
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -21,13 +23,19 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
       isLoading: false,
+      setupRequired: false,
       error: null,
 
       login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-          const { user, token } = await authApi.login(email, password);
-          set({ user, token, isAuthenticated: true, isLoading: false });
+          const result = await authApi.login(email, password);
+          if (result.requiresSetup) {
+            sessionStorage.setItem("setup_token", result.setupToken);
+            set({ setupRequired: true, isLoading: false });
+          } else {
+            set({ user: result.user, token: result.token, isAuthenticated: true, isLoading: false });
+          }
         } catch (err) {
           const status = (err as { response?: { status?: number } })?.response?.status;
           const message =
@@ -48,6 +56,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearError: () => set({ error: null }),
+      clearSetupRequired: () => set({ setupRequired: false }),
     }),
     {
       name: "mymquid-admin-auth",

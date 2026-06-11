@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Edit, Mail, ShieldOff, Shield, Trash2, Send } from "lucide-react";
+import { ArrowLeft, Edit, Mail, ShieldOff, Shield, Trash2, Send, KeyRound } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { SkeletonLoader } from "../shared/components/SkeletonLoader";
 import { BlogStatusBadge } from "../blog/components/BlogStatusBadge";
 import { UserStatCards } from "./components/UserStatCards";
 import { AddUserModal } from "./components/AddUserModal";
+import { SetupKeyModal } from "./components/SetupKeyModal";
 import { useUserStore } from "./useUserStore";
 import type { CreateUserPayload, UpdateUserPayload } from "../types";
 
@@ -30,10 +31,12 @@ export default function UserDetailPage() {
     deleteUser,
     resetUserPassword,
     resendUserInvite,
+    regenerateSetupKey,
   } = useUserStore();
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const [setupKeyData, setSetupKeyData] = useState<{ name: string; key: string } | null>(null);
 
   useEffect(() => {
     if (!id) { navigate("/admin/users"); return; }
@@ -160,6 +163,19 @@ export default function UserDetailPage() {
               onClick={() => resendUserInvite(user.id)}
             >
               <Send className="mr-2 h-4 w-4" /> Resend Invite
+            </Button>
+          )}
+          {user.passwordSet === false && (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isActionLoading}
+              onClick={async () => {
+                const key = await regenerateSetupKey(user.id);
+                if (key) setSetupKeyData({ name: user.name, key });
+              }}
+            >
+              <KeyRound className="mr-2 h-4 w-4" /> Regenerate Setup Key
             </Button>
           )}
           <Button
@@ -326,6 +342,15 @@ export default function UserDetailPage() {
         onConfirm={handleConfirm}
         onCancel={() => setConfirmAction(null)}
       />
+
+      {setupKeyData && (
+        <SetupKeyModal
+          open
+          userName={setupKeyData.name}
+          setupKey={setupKeyData.key}
+          onClose={() => setSetupKeyData(null)}
+        />
+      )}
     </div>
   );
 }

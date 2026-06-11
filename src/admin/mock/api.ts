@@ -1,13 +1,15 @@
 import api from "@/lib/axios";
-import type { BlogPost, BlogStatus, UserWithStats, CreateUserPayload, UpdateUserPayload } from "../types";
+import type { BlogPost, BlogStatus, UserWithStats, UserWithSetupKey, CreateUserPayload, UpdateUserPayload } from "../types";
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
 export const authApi = {
   login: async (email: string, password: string) => {
     const { data } = await api.post("/auth/login", { email, password });
-    // Real API returns { access_token, user } — normalise to { token, user }
-    return { user: data.user, token: data.access_token };
+    if (data.requires_password_setup) {
+      return { requiresSetup: true as const, setupToken: data.setup_token as string };
+    }
+    return { requiresSetup: false as const, user: data.user, token: data.access_token as string };
   },
 
   logout: async () => {
@@ -17,6 +19,11 @@ export const authApi = {
   setPassword: async (token: string, password: string, confirmPassword: string) => {
     const { data } = await api.post("/auth/set-password", { token, password, confirmPassword });
     return { user: data.user, token: data.access_token };
+  },
+
+  setupPassword: async (setupToken: string, password: string, confirmPassword: string) => {
+    const { data } = await api.post("/auth/setup-password", { setupToken, password, confirmPassword });
+    return { user: data.user, token: data.access_token as string };
   },
 };
 
@@ -165,6 +172,27 @@ export const uploadApi = {
   },
 };
 
+// ─── Moderation ───────────────────────────────────────────────────────────────
+
+export const moderationApi = {
+  getPosts: async (status?: string): Promise<BlogPost[]> => {
+    const params: Record<string, string> = { page: "1", limit: "20" };
+    if (status && status !== "all") params.status = status;
+    const { data } = await api.get("/admin/posts", { params });
+    return Array.isArray(data) ? data : (data.data ?? []);
+  },
+
+  approve: async (id: string): Promise<BlogPost> => {
+    const { data } = await api.post(`/admin/posts/${id}/approve`, {});
+    return data;
+  },
+
+  reject: async (id: string, reason?: string): Promise<BlogPost> => {
+    const { data } = await api.post(`/admin/posts/${id}/reject`, { reason });
+    return data;
+  },
+};
+
 // ─── Users ────────────────────────────────────────────────────────────────────
 
 export const userApi = {
@@ -178,7 +206,7 @@ export const userApi = {
     return data;
   },
 
-  create: async (payload: CreateUserPayload): Promise<UserWithStats> => {
+  create: async (payload: CreateUserPayload): Promise<UserWithSetupKey> => {
     const { data } = await api.post("/users", payload);
     return data;
   },
@@ -202,6 +230,11 @@ export const userApi = {
 
   resendInvite: async (id: string): Promise<void> => {
     await api.post(`/users/${id}/resend-invite`);
+  },
+
+  regenerateSetupKey: async (id: string): Promise<{ setupKey: string }> => {
+    const { data } = await api.post(`/users/${id}/regenerate-setup-key`, {});
+    return data;
   },
 
   getPosts: async (id: string): Promise<BlogPost[]> => {

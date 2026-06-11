@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "../../shared/components/DataTable";
 import { BlogStatusBadge } from "./BlogStatusBadge";
+import { ModerationBadge } from "./ModerationBadge";
 import type { BlogPost } from "../../types";
 import { useAuthStore } from "../../auth/useAuthStore";
 
@@ -23,14 +24,24 @@ export function BlogTable({ posts, isLoading, onDelete }: Props) {
       key: "title",
       header: "Title",
       render: (post: BlogPost) => (
-        <span className="font-medium line-clamp-1">{post.title}</span>
+        <div>
+          <span className="font-medium line-clamp-1">{post.title}</span>
+          {post.moderationStatus === "rejected" && post.rejectionReason && (
+            <p className="text-xs text-destructive mt-0.5 line-clamp-1">{post.rejectionReason}</p>
+          )}
+        </div>
       ),
     },
     {
       key: "status",
       header: "Status",
-      render: (post: BlogPost) => <BlogStatusBadge status={post.status} />,
-      className: "w-32",
+      render: (post: BlogPost) => (
+        <div className="flex flex-col gap-1">
+          <BlogStatusBadge status={post.status} />
+          {post.moderationStatus && <ModerationBadge status={post.moderationStatus} />}
+        </div>
+      ),
+      className: "w-40",
     },
     {
       key: "category",

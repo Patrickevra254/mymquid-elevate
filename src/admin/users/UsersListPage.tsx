@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { UserPlus } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "../shared/components/PageHeader";
 import { ConfirmModal } from "../shared/components/ConfirmModal";
 import { UserTable } from "./components/UserTable";
 import { AddUserModal } from "./components/AddUserModal";
+import { SetupKeyModal } from "./components/SetupKeyModal";
 import { useUserStore } from "./useUserStore";
 import type { UserWithStats, CreateUserPayload, UpdateUserPayload } from "../types";
 
@@ -29,14 +31,20 @@ export default function UsersListPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editUser, setEditUser] = useState<UserWithStats | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const [setupKeyData, setSetupKeyData] = useState<{ name: string; key: string } | null>(null);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
   const handleAddSubmit = async (data: CreateUserPayload | UpdateUserPayload) => {
-    await createUser(data as CreateUserPayload);
+    const created = await createUser(data as CreateUserPayload);
     setShowAddModal(false);
+    if (created.setupKey) {
+      setSetupKeyData({ name: created.name, key: created.setupKey });
+    } else {
+      toast.success(`User created. An invite email has been sent to ${created.email}.`);
+    }
   };
 
   const handleEditSubmit = async (data: CreateUserPayload | UpdateUserPayload) => {
@@ -125,6 +133,15 @@ export default function UsersListPage() {
         onConfirm={handleConfirm}
         onCancel={() => setConfirmAction(null)}
       />
+
+      {setupKeyData && (
+        <SetupKeyModal
+          open
+          userName={setupKeyData.name}
+          setupKey={setupKeyData.key}
+          onClose={() => setSetupKeyData(null)}
+        />
+      )}
     </div>
   );
 }

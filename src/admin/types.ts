@@ -1,5 +1,7 @@
 export type AdminRole = "super_admin" | "staff";
 
+export type ModerationStatus = "pending" | "approved" | "rejected";
+
 export type AdminUser = {
   id: string;
   name: string;
@@ -12,6 +14,7 @@ export type UserWithStats = AdminUser & {
   active: boolean;
   lastLogin: string;
   createdAt: string;
+  passwordSet?: boolean;
   stats: {
     published: number;
     drafts: number;
@@ -19,6 +22,8 @@ export type UserWithStats = AdminUser & {
     total: number;
   };
 };
+
+export type UserWithSetupKey = UserWithStats & { setupKey?: string };
 
 export type CreateUserPayload = {
   name: string;
@@ -40,6 +45,11 @@ export type BlogPost = {
   slug: string;
   content: string;
   status: BlogStatus;
+  moderationStatus?: ModerationStatus;
+  reviewedAt?: string | null;
+  rejectionReason?: string | null;
+  reviewedById?: string | null;
+  reviewer?: { id: string; name: string } | null;
   category: string;
   tags: string[];
   featuredImage?: string;

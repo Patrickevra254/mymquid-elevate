@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight, MapPin, Briefcase } from "lucide-react";
+import { ArrowUpRight/*, MapPin, Briefcase*/ } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 
-const roles = [
+/* const roles = [
   { title: "Senior Cloud Engineer", team: "Cloud", location: "Lagos · Hybrid", type: "Full-time" },
   { title: "SOC Analyst (Tier 2)", team: "Security", location: "Remote · Africa", type: "Full-time" },
   { title: "Site Reliability Engineer", team: "Managed Services", location: "Lagos · On-site", type: "Full-time" },
   { title: "Senior React Engineer", team: "Product", location: "Remote · Global", type: "Full-time" },
   { title: "Account Executive — Enterprise", team: "Go-to-market", location: "Lagos · Hybrid", type: "Full-time" },
   { title: "Engineering Internship", team: "Rotation", location: "Lagos · On-site", type: "12 months" },
-];
+]; */
 
 const perks = [
   ["Senior comp", "Top 10% of market with equity for principals."],
@@ -49,6 +49,7 @@ export default function Careers() {
           ))}
         </div>
 
+        {/* OPEN ROLES — commented out until hiring reopens
         <h2 className="mt-16 text-2xl font-medium">Open roles</h2>
         <div className="mt-6 card-elevated rounded-3xl divide-y divide-border overflow-hidden">
           {roles.map((r) => (
@@ -64,6 +65,14 @@ export default function Careers() {
               <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition" />
             </a>
           ))}
+        </div>
+        */}
+
+        <div className="mt-16 card-elevated rounded-3xl p-10 text-center">
+          <h2 className="text-2xl font-medium">No open roles right now</h2>
+          <p className="mt-3 text-muted-foreground max-w-md mx-auto">
+            We're not actively hiring at the moment, but we're always open to meeting exceptional people. Send us a note and we'll keep you in mind.
+          </p>
         </div>
 
         <div className="mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 card-elevated rounded-3xl p-10">

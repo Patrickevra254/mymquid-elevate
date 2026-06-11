@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { PlusCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -13,7 +14,9 @@ import {
 import { PageHeader } from "../shared/components/PageHeader";
 import { ConfirmModal } from "../shared/components/ConfirmModal";
 import { BlogTable } from "./components/BlogTable";
+import { ModerationTab } from "./components/ModerationTab";
 import { useBlogStore } from "./useBlogStore";
+import { useAuthStore } from "../auth/useAuthStore";
 import { useDebounce } from "../shared/hooks/useDebounce";
 import { usePagination } from "../shared/hooks/usePagination";
 import { MOCK_CATEGORIES } from "../mock/data";
@@ -21,6 +24,7 @@ import { MOCK_CATEGORIES } from "../mock/data";
 export default function BlogListPage() {
   const navigate = useNavigate();
   const { posts, isLoading, filters, fetchPosts, setFilters, deletePost } = useBlogStore();
+  const isSuperAdmin = useAuthStore((s) => s.user?.role === "super_admin");
 
   const [searchInput, setSearchInput] = useState(filters.search);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -65,67 +69,75 @@ export default function BlogListPage() {
         }
       />
 
-      {/* Filters */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <label htmlFor="blog-search" className="sr-only">Search posts</label>
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            id="blog-search"
-            className="pl-9"
-            placeholder="Search posts..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-        </div>
-        <Select
-          value={filters.status || "all"}
-          onValueChange={(v) => setFilters({ status: v === "all" ? "" : v })}
-        >
-          <SelectTrigger className="w-full sm:w-40">
-            <SelectValue placeholder="All statuses" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="published">Published</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="scheduled">Scheduled</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select
-          value={filters.category || "all"}
-          onValueChange={(v) => setFilters({ category: v === "all" ? "" : v })}
-        >
-          <SelectTrigger className="w-full sm:w-44">
-            <SelectValue placeholder="All categories" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All categories</SelectItem>
-            {MOCK_CATEGORIES.map((cat) => (
-              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <Tabs defaultValue="posts">
+        <TabsList>
+          <TabsTrigger value="posts">All Posts</TabsTrigger>
+          {isSuperAdmin && <TabsTrigger value="moderation">Moderation Queue</TabsTrigger>}
+        </TabsList>
 
-      <BlogTable posts={paginatedPosts} isLoading={isLoading} onDelete={setDeleteId} />
-
-      {/* Pagination */}
-      {posts.length > 10 && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>
-            Showing {from + 1}–{to} of {posts.length}
-          </span>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={prevPage} disabled={page === 1}>
-              Previous
-            </Button>
-            <Button variant="outline" size="sm" onClick={nextPage} disabled={page === totalPages}>
-              Next
-            </Button>
+        <TabsContent value="posts" className="space-y-4 pt-2">
+          {/* Filters */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative flex-1">
+              <label htmlFor="blog-search" className="sr-only">Search posts</label>
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="blog-search"
+                className="pl-9"
+                placeholder="Search posts..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+            </div>
+            <Select
+              value={filters.status || "all"}
+              onValueChange={(v) => setFilters({ status: v === "all" ? "" : v })}
+            >
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder="All statuses" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="scheduled">Scheduled</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={filters.category || "all"}
+              onValueChange={(v) => setFilters({ category: v === "all" ? "" : v })}
+            >
+              <SelectTrigger className="w-full sm:w-44">
+                <SelectValue placeholder="All categories" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All categories</SelectItem>
+                {MOCK_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        </div>
-      )}
+
+          <BlogTable posts={paginatedPosts} isLoading={isLoading} onDelete={setDeleteId} />
+
+          {posts.length > 10 && (
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <span>Showing {from + 1}–{to} of {posts.length}</span>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={prevPage} disabled={page === 1}>Previous</Button>
+                <Button variant="outline" size="sm" onClick={nextPage} disabled={page === totalPages}>Next</Button>
+              </div>
+            </div>
+          )}
+        </TabsContent>
+
+        {isSuperAdmin && (
+          <TabsContent value="moderation" className="pt-2">
+            <ModerationTab />
+          </TabsContent>
+        )}
+      </Tabs>
 
       <ConfirmModal
         open={!!deleteId}

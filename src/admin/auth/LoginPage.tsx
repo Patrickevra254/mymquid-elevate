@@ -20,7 +20,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login, isLoading, isAuthenticated, error, clearError } = useAuthStore();
+  const { login, isLoading, isAuthenticated, setupRequired, clearSetupRequired, error, clearError } = useAuthStore();
 
   const {
     register,
@@ -34,6 +34,13 @@ export default function LoginPage() {
       navigate("/admin/dashboard", { replace: true });
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (setupRequired) {
+      clearSetupRequired();
+      navigate("/admin/setup-password", { replace: true });
+    }
+  }, [setupRequired, clearSetupRequired, navigate]);
 
   useEffect(() => {
     if (error) {
